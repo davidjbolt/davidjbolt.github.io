@@ -121,14 +121,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .pill-ride  {background:rgba(91,141,238,0.12);  color:var(--blue)}
 .pill-swim  {background:rgba(232,96,58,0.12);   color:var(--coral)}
 .pill-walk  {background:rgba(122,128,153,0.1);  color:var(--muted)}
-.pill-strength{background:rgba(232,180,58,0.12);color:var(--amber)}
 .pill-brick {background:rgba(155,127,232,0.12); color:var(--purple)}
 .mono{font-family:var(--mono);font-size:12px}
 .hr-high{color:var(--coral)}
 .hr-mid {color:var(--amber)}
 .hr-low {color:var(--teal)}
 
-/* ── STRENGTH ── */
 .str-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
 .str-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px}
 .str-card h3{font-size:13px;font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
@@ -220,18 +218,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
     <div class="sc-val">6.4 km</div>
     <div class="sc-sub">Jun 19 · 6:16/km</div>
   </div>
-  <div class="sc">
-    <div class="sc-top"><span class="dot" style="background:var(--amber)"></span>Strength</div>
-    <div class="sc-val" id="st-str">0</div>
-    <div class="sc-sub">sessions done</div>
-  </div>
 </div>
 
 <!-- Nav -->
 <div class="nav">
   <button class="nav-btn active" onclick="showPanel('plan',this)">Training Plan</button>
   <button class="nav-btn" onclick="showPanel('log',this)">Workout Log</button>
-  <button class="nav-btn" onclick="showPanel('strength',this)">Strength</button>
   <button class="nav-btn" onclick="showPanel('charts',this)">Charts</button>
   <button class="nav-btn" onclick="showPanel('insights',this)">Insights</button>
 </div>
@@ -251,57 +243,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
       </tr></thead>
       <tbody id="log-body"></tbody>
     </table>
-  </div>
-</div>
-
-<!-- STRENGTH -->
-<div class="panel" id="panel-strength">
-  <div class="str-grid">
-    <div class="str-card">
-      <h3 style="color:var(--teal)">Session A — Lower + core</h3>
-      <ul class="ex-list">
-        <li>Goblet squat<span class="ex-sets">3 × 12</span></li>
-        <li>Single-leg Romanian deadlift<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Hip thrust<span class="ex-sets">3 × 15</span></li>
-        <li>Lateral band walk<span class="ex-sets">2 × 20 steps</span></li>
-        <li>Dead bug<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Single-leg calf raise<span class="ex-sets">3 × 15</span></li>
-      </ul>
-    </div>
-    <div class="str-card">
-      <h3 style="color:var(--blue)">Session B — Upper + rotational</h3>
-      <ul class="ex-list">
-        <li>Dumbbell row<span class="ex-sets">3 × 12 ea</span></li>
-        <li>Push-up or DB press<span class="ex-sets">3 × 10</span></li>
-        <li>Pallof press<span class="ex-sets">3 × 12 ea</span></li>
-        <li>Step-up with knee drive<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Band pull-apart<span class="ex-sets">3 × 15</span></li>
-        <li>Plank hold<span class="ex-sets">3 × 30–45 sec</span></li>
-      </ul>
-    </div>
-    <div class="str-card">
-      <h3 style="color:var(--coral)">Swim dryland add-on</h3>
-      <ul class="ex-list">
-        <li>Lat pulldown or pull-up<span class="ex-sets">3 × 10</span></li>
-        <li>Dumbbell pull-over<span class="ex-sets">3 × 12</span></li>
-        <li>Shoulder external rotation<span class="ex-sets">2 × 15</span></li>
-        <li>Face pull<span class="ex-sets">3 × 15</span></li>
-        <li>Streamline hollow hold<span class="ex-sets">3 × 20 sec</span></li>
-      </ul>
-    </div>
-    <div class="str-card">
-      <h3 style="color:var(--muted)">Rules</h3>
-      <ul class="ex-list" style="list-style:none">
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Moderate weights — not powerlifting prep</li>
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Never the day before a long run or brick</li>
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Drop to 1×/week in taper (weeks 14–15)</li>
-        <li style="display:block;padding:5px 0;font-size:12px;color:var(--muted)">Alternate A → B each session</li>
-      </ul>
-    </div>
-  </div>
-  <div class="str-log">
-    <div class="str-log-title">Session log — 2× per week</div>
-    <div id="str-log-body"></div>
   </div>
 </div>
 
@@ -412,7 +353,7 @@ const log = [
 ];
 
 // ── state ─────────────────────────────────────────────────────────────────
-let state = {weeks:{}, sessions:{}, strength:{}};
+let state = {weeks:{}, sessions:{}};
 function sk(w,s){return `w${w}s${s}`}
 
 function load(){
@@ -445,10 +386,8 @@ function tick(){
 function updateStats(){
   const dw = weeks.filter(w=>state.weeks[w.n]).length;
   let ds=0; weeks.forEach(w=>w.s.forEach((_,i)=>{ if(state.sessions[sk(w.n,i)]) ds++; }));
-  const dstr = Object.values(state.strength).filter(Boolean).length;
   document.getElementById('st-wk').textContent   = dw+'/15';
   document.getElementById('st-sess').textContent = ds;
-  document.getElementById('st-str').textContent  = dstr;
 }
 
 // ── nav ───────────────────────────────────────────────────────────────────
@@ -566,37 +505,6 @@ function buildLog(){
   }).join('');
 }
 
-// ── strength log ──────────────────────────────────────────────────────────
-function buildStrLog(){
-  const now=new Date();
-  const rows=[];
-  for(let d=new Date('2026-05-26'); d<=now; d.setDate(d.getDate()+1)){
-    if(d.getDay()===2||d.getDay()===5) rows.push(new Date(d));
-  }
-  const recent=rows.slice(-16).reverse();
-  document.getElementById('str-log-body').innerHTML = recent.map((d,i)=>{
-    const key='str_'+d.toISOString().slice(0,10);
-    const done=!!state.strength[key];
-    const isA=i%2===0;
-    const ds=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-    return `<div class="str-row">
-      <span class="str-date">${ds}</span>
-      <div class="str-focus">
-        <div class="sf-type">Session ${isA?'A':'B'}</div>
-        <div class="sf-sub">${isA?'Lower body + core':'Upper + rotational core'}</div>
-      </div>
-      <div class="str-cb${done?' done':''}" onclick="toggleStr('${key}',this)">${done?'✓':''}</div>
-    </div>`;
-  }).join('');
-}
-
-function toggleStr(key,el){
-  state.strength[key]=!state.strength[key];
-  el.classList.toggle('done',!!state.strength[key]);
-  el.textContent=state.strength[key]?'✓':'';
-  updateStats(); save();
-}
-
 // ── charts ────────────────────────────────────────────────────────────────
 function buildCharts(){
   const gc='rgba(255,255,255,0.05)', tc='#7a8099';
@@ -636,7 +544,6 @@ load();
 tick(); setInterval(tick,1000);
 buildPlan();
 buildLog();
-buildStrLog();
 buildCharts();
 updateStats();
 </script>
