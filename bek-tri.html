@@ -3,1240 +3,642 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bek's Triathlon Tracker — Sep 12</title>
+<title>Bek's Tri Tracker · Sep 12</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
 
-  :root {
-    --bg:        #0f1117;
-    --surface:   #181c27;
-    --surface2:  #1e2333;
-    --border:    rgba(255,255,255,0.07);
-    --border2:   rgba(255,255,255,0.13);
-    --text:      #e8eaf0;
-    --muted:     #7a8099;
-    --faint:     #3a3f52;
-    --coral:     #e8603a;
-    --coral-d:   #c04a2a;
-    --coral-bg:  rgba(232,96,58,0.10);
-    --teal:      #3ab8a0;
-    --teal-bg:   rgba(58,184,160,0.10);
-    --blue:      #5b8dee;
-    --blue-bg:   rgba(91,141,238,0.10);
-    --amber:     #e8b43a;
-    --amber-bg:  rgba(232,180,58,0.10);
-    --purple:    #9b7fe8;
-    --purple-bg: rgba(155,127,232,0.10);
-    --font:      'Inter', sans-serif;
-    --mono:      'DM Mono', monospace;
-    --radius:    10px;
-    --radius-lg: 14px;
-  }
+:root {
+  --bg:       #0f1117;
+  --s1:       #181c27;
+  --s2:       #1e2333;
+  --s3:       #252a3a;
+  --bd:       rgba(255,255,255,0.07);
+  --bd2:      rgba(255,255,255,0.13);
+  --text:     #e8eaf0;
+  --muted:    #7a8099;
+  --faint:    #2e3347;
+  --coral:    #e8603a;
+  --teal:     #3ab8a0;
+  --blue:     #5b8dee;
+  --amber:    #e8b43a;
+  --purple:   #9b7fe8;
+  --font:     'Inter', sans-serif;
+  --mono:     'DM Mono', monospace;
+  --r:        10px;
+  --rl:       14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── shell ── */
+.shell{max-width:960px;margin:0 auto;padding:0 20px 80px}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+/* ── top bar ── */
+.topbar{padding:28px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--bd);margin-bottom:28px}
+.topbar-left h1{font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.2px}
+.topbar-left p{font-size:12px;color:var(--muted);margin-top:2px}
+.race-pill{font-family:var(--mono);font-size:11px;color:var(--coral);background:rgba(232,96,58,0.1);border:1px solid rgba(232,96,58,0.25);padding:5px 13px;border-radius:999px}
 
-  /* ── Layout ── */
-  .shell { max-width: 1100px; margin: 0 auto; padding: 0 20px 60px; }
+/* ── countdown ── */
+.cd-row{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:22px 26px;margin-bottom:20px}
+.cd-digits{display:flex;align-items:flex-end;gap:3px}
+.cd-unit{text-align:center}
+.cd-num{font-family:var(--mono);font-size:44px;font-weight:500;color:#fff;line-height:1;letter-spacing:-2px}
+.cd-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;display:block;margin-top:4px}
+.cd-sep{font-family:var(--mono);font-size:32px;color:var(--faint);padding-bottom:10px}
+.cd-right{}
+.cd-phase{font-size:13px;color:var(--text);margin-bottom:8px}
+.cd-phase strong{color:var(--coral)}
+.prog-track{height:4px;background:var(--faint);border-radius:2px;overflow:hidden}
+.prog-fill{height:4px;background:var(--coral);border-radius:2px;transition:width 0.4s}
+.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:5px}
 
-  /* ── Header ── */
-  header {
-    padding: 32px 0 0;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 20px;
-    flex-wrap: wrap;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 24px;
-    margin-bottom: 32px;
-  }
-  .header-left h1 {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-    color: #fff;
-  }
-  .header-left p {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 3px;
-  }
-  .race-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--coral-bg);
-    border: 1px solid rgba(232,96,58,0.3);
-    border-radius: 999px;
-    padding: 5px 14px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--coral);
-    font-family: var(--mono);
-  }
+/* ── summary cards ── */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
+.sc-top{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.sc-val{font-size:22px;font-weight:500;color:#fff;font-family:var(--mono);line-height:1.1}
+.sc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-  /* ── Countdown ── */
-  .countdown-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 28px 32px;
-    margin-bottom: 28px;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-  .countdown-label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-  .countdown-digits {
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-  .cd-unit { text-align: center; }
-  .cd-num {
-    font-family: var(--mono);
-    font-size: 52px;
-    font-weight: 500;
-    color: #fff;
-    line-height: 1;
-    letter-spacing: -2px;
-  }
-  .cd-label {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-top: 5px;
-    display: block;
-  }
-  .cd-sep {
-    font-family: var(--mono);
-    font-size: 40px;
-    color: var(--faint);
-    line-height: 1;
-    padding-bottom: 10px;
-  }
-  .countdown-right { flex: 1; min-width: 200px; }
-  .phase-now {
-    font-size: 13px;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-  .phase-now strong { color: var(--coral); }
-  .overall-progress {
-    height: 5px;
-    background: var(--faint);
-    border-radius: 3px;
-    margin: 10px 0 5px;
-    overflow: hidden;
-  }
-  .overall-progress-fill {
-    height: 5px;
-    background: linear-gradient(90deg, var(--coral-d), var(--coral));
-    border-radius: 3px;
-    transition: width 0.5s ease;
-  }
-  .progress-labels {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--muted);
-    font-family: var(--mono);
-  }
+/* ── nav ── */
+.nav{display:flex;gap:2px;margin-bottom:24px}
+.nav-btn{padding:7px 20px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);background:transparent;border:none;transition:all 0.15s}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{background:var(--s1);color:#fff;border:1px solid var(--bd2)}
 
-  /* ── Stats row ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 28px;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 14px 16px;
-  }
-  .stat-card .sc-label {
-    font-size: 11px;
-    color: var(--muted);
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .stat-card .sc-val {
-    font-size: 24px;
-    font-weight: 500;
-    color: #fff;
-    font-family: var(--mono);
-    line-height: 1.1;
-  }
-  .stat-card .sc-sub {
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-  .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+/* ── panels ── */
+.panel{display:none}
+.panel.active{display:block}
 
-  /* ── Tabs ── */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 4px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .tab {
-    padding: 7px 18px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    color: var(--muted);
-    background: transparent;
-    border: none;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active {
-    background: var(--surface2);
-    color: #fff;
-    border: 1px solid var(--border2);
-  }
+/* ── PLAN ── */
+.phase-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin:28px 0 12px;display:flex;align-items:center;gap:10px}
+.phase-label::after{content:'';flex:1;height:1px;background:var(--bd)}
+.phase-label:first-child{margin-top:0}
 
-  /* ── Tab panels ── */
-  .panel { display: none; }
-  .panel.active { display: block; }
+.week{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:8px;transition:border-color 0.15s}
+.week:hover{border-color:var(--bd2)}
+.week.done{border-color:rgba(58,184,160,0.3)}
+.week.current{border-color:rgba(232,96,58,0.35);box-shadow:0 0 0 1px rgba(232,96,58,0.08)}
 
-  /* ── Week grid ── */
-  .week-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 12px;
-  }
-  .week-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-  .week-card:hover { border-color: var(--border2); }
-  .week-card.completed { border-color: rgba(58,184,160,0.3); }
-  .week-card.current { border-color: rgba(232,96,58,0.4); box-shadow: 0 0 0 1px rgba(232,96,58,0.1); }
-  .wc-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    user-select: none;
-    border-bottom: 1px solid var(--border);
-  }
-  .wc-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    min-width: 44px;
-  }
-  .wc-title { font-size: 13px; font-weight: 500; flex: 1; }
-  .wc-dates { font-size: 11px; color: var(--muted); }
-  .wc-phase {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .ph-base    { background: var(--teal-bg);   color: var(--teal); }
-  .ph-build1  { background: var(--blue-bg);   color: var(--blue); }
-  .ph-build2  { background: var(--coral-bg);  color: var(--coral); }
-  .ph-peak    { background: var(--amber-bg);  color: var(--amber); }
-  .ph-taper   { background: var(--purple-bg); color: var(--purple); }
-  .wc-check {
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 1.5px solid var(--faint);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 10px;
-  }
-  .wc-check.done { background: var(--teal); border-color: var(--teal); color: #fff; }
-  .wc-body { padding: 12px 14px; display: none; }
-  .wc-body.open { display: block; }
-  .sessions-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .session-cell {
-    background: var(--surface2);
-    border-radius: 7px;
-    padding: 7px 9px;
-    cursor: pointer;
-    transition: opacity 0.15s;
-    display: flex;
-    align-items: flex-start;
-    gap: 7px;
-  }
-  .session-cell.done { opacity: 0.45; }
-  .sess-cb {
-    width: 14px; height: 14px;
-    border-radius: 3px;
-    border: 1.5px solid var(--faint);
-    flex-shrink: 0;
-    margin-top: 1px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px;
-    transition: all 0.15s;
-  }
-  .sess-cb.checked { border-color: var(--teal); background: var(--teal); color: #fff; }
-  .sess-text .sl { font-size: 12px; font-weight: 500; color: var(--text); }
-  .sess-text .ss { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .wc-note {
-    font-size: 12px;
-    color: var(--muted);
-    background: rgba(255,255,255,0.03);
-    border-radius: 7px;
-    padding: 8px 10px;
-    line-height: 1.5;
-    margin-top: 6px;
-  }
-  .wc-expand-btn {
-    font-size: 11px;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 4px 14px 10px;
-    display: block;
-    text-align: center;
-  }
-  .wc-expand-btn:hover { color: var(--text); }
+.week-top{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
+.wk-num{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:38px}
+.wk-dates{font-size:13px;font-weight:500;flex:1}
+.wk-phase{font-size:10px;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.ph-base   {background:rgba(58,184,160,0.12); color:var(--teal)}
+.ph-build1 {background:rgba(91,141,238,0.12);  color:var(--blue)}
+.ph-build2 {background:rgba(232,96,58,0.12);   color:var(--coral)}
+.ph-peak   {background:rgba(232,180,58,0.12);  color:var(--amber)}
+.ph-taper  {background:rgba(155,127,232,0.12); color:var(--purple)}
+.wk-tick{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--faint);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;flex-shrink:0;transition:all 0.2s}
+.wk-tick.done{background:var(--teal);border-color:var(--teal);color:#0f1117}
+.wk-arrow{font-size:11px;color:var(--faint);transition:transform 0.2s;flex-shrink:0}
+.wk-arrow.open{transform:rotate(180deg)}
 
-  /* ── Workouts log ── */
-  .log-table { width: 100%; border-collapse: collapse; }
-  .log-table th {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    text-align: left;
-    padding: 0 12px 10px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .log-table td {
-    padding: 11px 12px;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  .log-table tr:last-child td { border-bottom: none; }
-  .log-table tr:hover td { background: rgba(255,255,255,0.02); }
-  .sport-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 500;
-    padding: 3px 9px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .sp-run    { background: var(--teal-bg); color: var(--teal); }
-  .sp-ride   { background: var(--blue-bg); color: var(--blue); }
-  .sp-swim   { background: var(--coral-bg); color: var(--coral); }
-  .sp-walk   { background: rgba(122,128,153,0.12); color: var(--muted); }
-  .sp-strength{ background: var(--amber-bg); color: var(--amber); }
-  .sp-brick  { background: var(--purple-bg); color: var(--purple); }
-  .mono { font-family: var(--mono); font-size: 12px; }
-  .hr-val { font-family: var(--mono); font-size: 12px; }
-  .hr-high { color: var(--coral); }
-  .hr-mid  { color: var(--amber); }
-  .hr-low  { color: var(--teal); }
+.week-body{display:none;padding:0 16px 14px;border-top:1px solid var(--bd)}
+.week-body.open{display:block}
 
-  /* ── Charts panel ── */
-  .chart-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 18px 20px;
-  }
-  .chart-card-full {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 18px 20px;
-    margin-bottom: 16px;
-  }
-  .chart-title {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 14px;
-  }
+.sessions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 10px}
+.sess{background:var(--s2);border-radius:8px;padding:8px 10px;display:flex;gap:8px;cursor:pointer;transition:opacity 0.15s;align-items:flex-start}
+.sess.done{opacity:0.4}
+.sess-cb{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--faint);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.15s}
+.sess-cb.done{background:var(--teal);border-color:var(--teal);color:#0f1117}
+.sess-info .sl{font-size:12px;font-weight:500;color:var(--text)}
+.sess-info .ss{font-size:11px;color:var(--muted);margin-top:1px}
+.sport-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0}
 
-  /* ── Strength panel ── */
-  .strength-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-  }
-  .strength-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 14px 16px;
-  }
-  .strength-card h3 {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--amber);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-  }
-  .ex-list { list-style: none; }
-  .ex-list li {
-    font-size: 12px;
-    color: var(--text);
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .ex-list li:last-child { border-bottom: none; }
-  .ex-sets { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
-  .strength-log-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-  }
-  .strength-log-row:last-child { border-bottom: none; }
-  .s-date { font-family: var(--mono); font-size: 11px; color: var(--muted); min-width: 70px; }
-  .s-focus { flex: 1; }
-  .s-check {
-    width: 22px; height: 22px;
-    border-radius: 5px;
-    border: 1.5px solid var(--faint);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .s-check.done { background: var(--amber); border-color: var(--amber); color: #0f1117; }
+.week-note{font-size:12px;color:var(--muted);background:rgba(255,255,255,0.025);border-radius:7px;padding:8px 11px;line-height:1.55}
 
-  /* ── Insights ── */
-  .insight-list { display: flex; flex-direction: column; gap: 10px; }
-  .insight-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.5;
-  }
-  .ins-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-  .ins-title { font-weight: 500; margin-bottom: 2px; }
-  .ins-body { font-size: 12px; color: var(--muted); }
-  .ins-good  { border-left: 3px solid var(--teal); }
-  .ins-warn  { border-left: 3px solid var(--amber); }
-  .ins-alert { border-left: 3px solid var(--coral); }
+/* ── LOG ── */
+.log-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
+.log-table{width:100%;border-collapse:collapse}
+.log-table th{font-size:11px;font-weight:500;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
+.log-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.log-table tr:last-child td{border-bottom:none}
+.log-table tr:hover td{background:rgba(255,255,255,0.015)}
+.pill{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill-run   {background:rgba(58,184,160,0.12); color:var(--teal)}
+.pill-ride  {background:rgba(91,141,238,0.12);  color:var(--blue)}
+.pill-swim  {background:rgba(232,96,58,0.12);   color:var(--coral)}
+.pill-walk  {background:rgba(122,128,153,0.1);  color:var(--muted)}
+.pill-strength{background:rgba(232,180,58,0.12);color:var(--amber)}
+.pill-brick {background:rgba(155,127,232,0.12); color:var(--purple)}
+.mono{font-family:var(--mono);font-size:12px}
+.hr-high{color:var(--coral)}
+.hr-mid {color:var(--amber)}
+.hr-low {color:var(--teal)}
 
-  /* ── Footer ── */
-  footer {
-    text-align: center;
-    font-size: 11px;
-    color: var(--faint);
-    padding: 32px 0 0;
-    font-family: var(--mono);
-  }
+/* ── STRENGTH ── */
+.str-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
+.str-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px}
+.str-card h3{font-size:13px;font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.ex-list{list-style:none}
+.ex-list li{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--text);gap:8px}
+.ex-list li:last-child{border-bottom:none}
+.ex-sets{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.str-log{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
+.str-log-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;padding:12px 16px;border-bottom:1px solid var(--bd)}
+.str-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
+.str-row:last-child{border-bottom:none}
+.str-date{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:90px}
+.str-focus{flex:1}
+.str-focus .sf-type{font-weight:500}
+.str-focus .sf-sub{font-size:11px;color:var(--muted)}
+.str-cb{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--faint);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.15s;flex-shrink:0}
+.str-cb.done{background:var(--amber);border-color:var(--amber);color:#0f1117;font-weight:600}
 
-  /* ── Chevron ── */
-  .chevron { font-size: 11px; color: var(--muted); transition: transform 0.2s; }
-  .chevron.open { transform: rotate(180deg); }
+/* ── CHARTS ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:18px 20px}
+.chart-card.full{grid-column:1/-1}
+.chart-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
 
-  /* ── Phase separator ── */
-  .phase-sep {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 20px 0 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .phase-sep::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+/* ── INSIGHTS ── */
+.ins-list{display:flex;flex-direction:column;gap:8px}
+.ins{background:var(--s1);border:1px solid var(--bd);border-left-width:3px;border-radius:var(--rl);padding:13px 15px;display:flex;gap:12px}
+.ins.good{border-left-color:var(--teal)}
+.ins.warn{border-left-color:var(--amber)}
+.ins.alert{border-left-color:var(--coral)}
+.ins-body .ins-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.ins-body .ins-text{font-size:12px;color:var(--muted);line-height:1.55}
+.ins-icon{font-size:15px;flex-shrink:0;margin-top:1px}
 
-  /* ── Legend ── */
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-bottom: 12px;
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .legend span { display: flex; align-items: center; gap: 5px; }
-  .leg-sq { width: 9px; height: 9px; border-radius: 2px; }
-
-  /* ── Responsive ── */
-  @media (max-width: 600px) {
-    .countdown-block { gap: 20px; }
-    .cd-num { font-size: 38px; }
-    .chart-grid { grid-template-columns: 1fr; }
-    .sessions-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+@media(max-width:640px){
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .cd-row{grid-template-columns:1fr;gap:16px}
+  .cd-num{font-size:34px}
+  .sessions{grid-template-columns:repeat(2,1fr)}
+  .chart-grid{grid-template-columns:1fr}
+  .chart-card.full{grid-column:auto}
+  .str-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="shell">
 
-  <!-- Header -->
-  <header>
-    <div class="header-left">
-      <h1>Bek's Triathlon Tracker</h1>
-      <p>Reeds Lake Sprint Triathlon · 15-week plan · Sep 12, 2026</p>
-    </div>
-    <div class="race-badge">🏁 Race Day: Sep 12, 2026</div>
-  </header>
+<div class="topbar">
+  <div class="topbar-left">
+    <h1>Bek's Triathlon Tracker</h1>
+    <p>Reeds Lake Sprint · 15-week plan</p>
+  </div>
+  <div class="race-pill">🏁 Sep 12, 2026</div>
+</div>
 
-  <!-- Countdown -->
-  <div class="countdown-block">
-    <div>
-      <div class="countdown-label">Time to race</div>
-      <div class="countdown-digits">
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-days">--</div>
-          <span class="cd-label">days</span>
-        </div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-hrs">--</div>
-          <span class="cd-label">hours</span>
-        </div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-min">--</div>
-          <span class="cd-label">min</span>
-        </div>
-        <div class="cd-sep">:</div>
-        <div class="cd-unit">
-          <div class="cd-num" id="cd-sec">--</div>
-          <span class="cd-label">sec</span>
-        </div>
+<!-- Countdown -->
+<div class="cd-row">
+  <div class="cd-digits">
+    <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><span class="cd-lbl">days</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><span class="cd-lbl">hrs</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><span class="cd-lbl">min</span></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><span class="cd-lbl">sec</span></div>
+  </div>
+  <div class="cd-right">
+    <div class="cd-phase">Phase: <strong id="phase-name">—</strong> &nbsp;·&nbsp; <span id="week-name" style="color:var(--muted);font-size:12px"></span></div>
+    <div class="prog-track" style="margin-top:10px"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="prog-labels"><span>May 26</span><span id="prog-pct">0%</span><span>Sep 12</span></div>
+  </div>
+</div>
+
+<!-- Summary -->
+<div class="summary">
+  <div class="sc">
+    <div class="sc-top"><span class="dot" style="background:var(--teal)"></span>Weeks done</div>
+    <div class="sc-val" id="st-wk">0/15</div>
+    <div class="sc-sub">of 15 total</div>
+  </div>
+  <div class="sc">
+    <div class="sc-top"><span class="dot" style="background:var(--blue)"></span>Sessions logged</div>
+    <div class="sc-val" id="st-sess">0</div>
+    <div class="sc-sub">workouts checked off</div>
+  </div>
+  <div class="sc">
+    <div class="sc-top"><span class="dot" style="background:var(--coral)"></span>Last run</div>
+    <div class="sc-val">6.4 km</div>
+    <div class="sc-sub">Jun 19 · 6:16/km</div>
+  </div>
+  <div class="sc">
+    <div class="sc-top"><span class="dot" style="background:var(--amber)"></span>Strength</div>
+    <div class="sc-val" id="st-str">0</div>
+    <div class="sc-sub">sessions done</div>
+  </div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPanel('plan',this)">Training Plan</button>
+  <button class="nav-btn" onclick="showPanel('log',this)">Workout Log</button>
+  <button class="nav-btn" onclick="showPanel('strength',this)">Strength</button>
+  <button class="nav-btn" onclick="showPanel('charts',this)">Charts</button>
+  <button class="nav-btn" onclick="showPanel('insights',this)">Insights</button>
+</div>
+
+<!-- PLAN -->
+<div class="panel active" id="panel-plan">
+  <div id="plan-container"></div>
+</div>
+
+<!-- LOG -->
+<div class="panel" id="panel-log">
+  <div class="log-wrap">
+    <table class="log-table">
+      <thead><tr>
+        <th>Date</th><th>Activity</th><th>Type</th>
+        <th>Distance</th><th>Time</th><th>Avg HR</th><th>Notes</th>
+      </tr></thead>
+      <tbody id="log-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STRENGTH -->
+<div class="panel" id="panel-strength">
+  <div class="str-grid">
+    <div class="str-card">
+      <h3 style="color:var(--teal)">Session A — Lower + core</h3>
+      <ul class="ex-list">
+        <li>Goblet squat<span class="ex-sets">3 × 12</span></li>
+        <li>Single-leg Romanian deadlift<span class="ex-sets">3 × 10 ea</span></li>
+        <li>Hip thrust<span class="ex-sets">3 × 15</span></li>
+        <li>Lateral band walk<span class="ex-sets">2 × 20 steps</span></li>
+        <li>Dead bug<span class="ex-sets">3 × 10 ea</span></li>
+        <li>Single-leg calf raise<span class="ex-sets">3 × 15</span></li>
+      </ul>
+    </div>
+    <div class="str-card">
+      <h3 style="color:var(--blue)">Session B — Upper + rotational</h3>
+      <ul class="ex-list">
+        <li>Dumbbell row<span class="ex-sets">3 × 12 ea</span></li>
+        <li>Push-up or DB press<span class="ex-sets">3 × 10</span></li>
+        <li>Pallof press<span class="ex-sets">3 × 12 ea</span></li>
+        <li>Step-up with knee drive<span class="ex-sets">3 × 10 ea</span></li>
+        <li>Band pull-apart<span class="ex-sets">3 × 15</span></li>
+        <li>Plank hold<span class="ex-sets">3 × 30–45 sec</span></li>
+      </ul>
+    </div>
+    <div class="str-card">
+      <h3 style="color:var(--coral)">Swim dryland add-on</h3>
+      <ul class="ex-list">
+        <li>Lat pulldown or pull-up<span class="ex-sets">3 × 10</span></li>
+        <li>Dumbbell pull-over<span class="ex-sets">3 × 12</span></li>
+        <li>Shoulder external rotation<span class="ex-sets">2 × 15</span></li>
+        <li>Face pull<span class="ex-sets">3 × 15</span></li>
+        <li>Streamline hollow hold<span class="ex-sets">3 × 20 sec</span></li>
+      </ul>
+    </div>
+    <div class="str-card">
+      <h3 style="color:var(--muted)">Rules</h3>
+      <ul class="ex-list" style="list-style:none">
+        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Moderate weights — not powerlifting prep</li>
+        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Never the day before a long run or brick</li>
+        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Drop to 1×/week in taper (weeks 14–15)</li>
+        <li style="display:block;padding:5px 0;font-size:12px;color:var(--muted)">Alternate A → B each session</li>
+      </ul>
+    </div>
+  </div>
+  <div class="str-log">
+    <div class="str-log-title">Session log — 2× per week</div>
+    <div id="str-log-body"></div>
+  </div>
+</div>
+
+<!-- CHARTS -->
+<div class="panel" id="panel-charts">
+  <div class="chart-grid">
+    <div class="chart-card full">
+      <div class="chart-title">Monthly bike sessions — 2024 to present</div>
+      <div style="position:relative;height:200px">
+        <canvas id="c-bike" role="img" aria-label="Monthly bike sessions 2024 to 2026">Peaking at 35 sessions in March 2026.</canvas>
       </div>
     </div>
-    <div class="countdown-right">
-      <div class="phase-now">Currently in: <strong id="phase-label">Base Phase</strong></div>
-      <div style="font-size:12px; color:var(--muted); margin-top:2px" id="week-label">Week 1 of 15</div>
-      <div class="overall-progress" style="margin-top:14px">
-        <div class="overall-progress-fill" id="overall-fill" style="width:0%"></div>
+    <div class="chart-card">
+      <div class="chart-title">Run distance progression</div>
+      <div style="position:relative;height:180px">
+        <canvas id="c-run" role="img" aria-label="Run distances growing from 3.1 to 6.4 km">Growing from 3.1 km in April 2025 to 6.4 km in June 2026.</canvas>
       </div>
-      <div class="progress-labels">
-        <span>May 26</span>
-        <span id="pct-label">0% complete</span>
-        <span>Sep 12</span>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Swim distances</div>
+      <div style="position:relative;height:180px">
+        <canvas id="c-swim" role="img" aria-label="Swim distances from 370 to 1150m">370m in Feb 2025 growing to 1150m in June 2026.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Bike HR distribution</div>
+      <div style="position:relative;height:180px">
+        <canvas id="c-hr" role="img" aria-label="Bike HR mostly 140-170 bpm">Most rides at 150-160 bpm.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Run HR — recent activities</div>
+      <div style="position:relative;height:180px">
+        <canvas id="c-runhr" role="img" aria-label="Run HR 117 to 178 bpm">Recent runs trending toward 150-157 bpm.</canvas>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Stats row -->
-  <div class="stats-row" id="statsRow">
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--teal)"></span> Weeks done</div>
-      <div class="sc-val" id="st-weeks">0/15</div>
-      <div class="sc-sub">of 15 total</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--blue)"></span> Sessions logged</div>
-      <div class="sc-val" id="st-sess">0</div>
-      <div class="sc-sub">workouts checked off</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--coral)"></span> Recent run</div>
-      <div class="sc-val">6.4 km</div>
-      <div class="sc-sub">Jun 19 · 6:16 /km</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--coral)"></span> Last swim</div>
-      <div class="sc-val">1,025 m</div>
-      <div class="sc-sub">Jun 16 · avg HR 129</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--blue)"></span> Last ride</div>
-      <div class="sc-val">85%</div>
-      <div class="sc-sub">Jun 18 · zone 2</div>
-    </div>
-    <div class="stat-card">
-      <div class="sc-label"><span class="dot" style="background:var(--amber)"></span> Strength sessions</div>
-      <div class="sc-val" id="st-strength">0</div>
-      <div class="sc-sub">this block</div>
-    </div>
+<!-- INSIGHTS -->
+<div class="panel" id="panel-insights">
+  <div class="ins-list">
+    <div class="ins good"><span class="ins-icon">📈</span><div class="ins-body"><div class="ins-title">Run base is forming fast</div><div class="ins-text">Three runs Jun 17–19, pace locked at 6:10–6:15/km across all distances. Longest run hit 6.4 km — well ahead of plan for week 4.</div></div></div>
+    <div class="ins good"><span class="ins-icon">🏊</span><div class="ins-body"><div class="ins-title">Swim HR is perfectly controlled</div><div class="ins-text">Jun 12: 76% easy/zone 2, avg 119 bpm. Jun 16: avg 129, started high and settled fast. The zone 2 HR spike problem on the run doesn't exist in the water.</div></div></div>
+    <div class="ins good"><span class="ins-icon">🚴</span><div class="ins-body"><div class="ins-title">First true zone 2 ride logged</div><div class="ins-text">Jun 18 indoor ride: 85% zone 2, avg HR 129, max 141. Previous data showed almost all rides at 147+ avg. Replicate this weekly.</div></div></div>
+    <div class="ins warn"><span class="ins-icon">⚠️</span><div class="ins-body"><div class="ins-title">Three runs back-to-back is aggressive</div><div class="ins-text">Jun 17–19: three consecutive days. Watch for shin or calf tightness. One rest day between runs is safer until week 7+.</div></div></div>
+    <div class="ins warn"><span class="ins-icon">💓</span><div class="ins-body"><div class="ins-title">Run HR is elevated — but don't fight it</div><div class="ins-text">Avg 149–157 across recent runs. HR is stable, effort is conversational, pace is consistent. This is her easy pace for now. It will come down with base building.</div></div></div>
+    <div class="ins alert"><span class="ins-icon">🎯</span><div class="ins-body"><div class="ins-title">Swim 2× per week is the #1 priority</div><div class="ins-text">Two swims in the last 10 days is a good start, but 2× per week consistently from now through week 13 is non-negotiable. Missing swim weeks hurts more than missing run or bike weeks.</div></div></div>
+    <div class="ins good"><span class="ins-icon">🚶</span><div class="ins-body"><div class="ins-title">Walking base is a hidden asset</div><div class="ins-text">843 walks, 25–36 km per week recently. Meaningful aerobic volume and joint conditioning. It's why running is more accessible than it would be for a true beginner.</div></div></div>
   </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('plan')">Training Plan</button>
-    <button class="tab" onclick="showTab('log')">Workout Log</button>
-    <button class="tab" onclick="showTab('charts')">Progress Charts</button>
-    <button class="tab" onclick="showTab('strength')">Strength</button>
-    <button class="tab" onclick="showTab('insights')">Insights</button>
-  </div>
-
-  <!-- ── PLAN TAB ── -->
-  <div class="panel active" id="tab-plan">
-    <div id="planContainer"></div>
-  </div>
-
-  <!-- ── LOG TAB ── -->
-  <div class="panel" id="tab-log">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:6px 0;overflow-x:auto">
-      <table class="log-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Activity</th>
-            <th>Sport</th>
-            <th>Distance</th>
-            <th>Time</th>
-            <th>Avg HR</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="logBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ── CHARTS TAB ── -->
-  <div class="panel" id="tab-charts">
-    <div class="chart-card-full">
-      <div class="chart-title">Weekly training volume — bike sessions per month (2024–2026)</div>
-      <div class="legend">
-        <span><span class="leg-sq" style="background:var(--blue)"></span>Bike sessions</span>
-        <span><span class="leg-sq" style="background:var(--teal)"></span>Runs</span>
-        <span><span class="leg-sq" style="background:var(--coral)"></span>Swims</span>
-      </div>
-      <div style="position:relative;height:220px">
-        <canvas id="volumeChart" role="img" aria-label="Monthly activity volume from Sep 2024 to Jun 2026">Monthly bike sessions peaking at 35 in March 2026 and 31 in April 2026.</canvas>
-      </div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-card">
-        <div class="chart-title">Run progression (distance)</div>
-        <div style="position:relative;height:180px">
-          <canvas id="runChart" role="img" aria-label="Run distance progression from 3.1 km to 6.4 km">Runs growing from 3.1 km in April 2025 to 6.4 km in May 2026.</canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Swim distance (recent sessions)</div>
-        <div style="position:relative;height:180px">
-          <canvas id="swimChart" role="img" aria-label="Swim distances from 370 to 1150m">Swims: 370m Feb 2025, 663m Jun 2025, 1025m Jun 2026 (swim 7), 1150m Jun 2026 (swim 8).</canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Bike HR distribution (257 rides)</div>
-        <div style="position:relative;height:180px">
-          <canvas id="hrChart" role="img" aria-label="Bike heart rate distribution showing most rides at 140-170 bpm">100 rides at 150-160 bpm, 66 at 140-150, 60 at 160-170 bpm.</canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Recent run HR (by activity)</div>
-        <div style="position:relative;height:180px">
-          <canvas id="runHrChart" role="img" aria-label="Run heart rate across 6 recent runs, ranging from 117 to 178 bpm">Run HR: 163, 158, 178, 117, 159, 155, 157 bpm across last 7 runs.</canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── STRENGTH TAB ── -->
-  <div class="panel" id="tab-strength">
-    <div style="margin-bottom:20px;font-size:13px;color:var(--muted);line-height:1.6">
-      2× per week. Focus on hip stability, glutes, and single-leg work to support the run. Keep it 30–40 min — not a second training session, just maintenance + run protection.
-    </div>
-    <div class="strength-grid" style="margin-bottom:28px">
-
-      <div class="strength-card">
-        <h3>&#x2694;&#xFE0F; Session A — Lower body + core</h3>
-        <ul class="ex-list">
-          <li>Goblet squat <span class="ex-sets">3 × 12</span></li>
-          <li>Single-leg Romanian deadlift <span class="ex-sets">3 × 10 each</span></li>
-          <li>Hip thrust (glute bridge) <span class="ex-sets">3 × 15</span></li>
-          <li>Lateral band walk <span class="ex-sets">2 × 20 steps</span></li>
-          <li>Dead bug <span class="ex-sets">3 × 10 each</span></li>
-          <li>Calf raise (single leg) <span class="ex-sets">3 × 15</span></li>
-        </ul>
-      </div>
-
-      <div class="strength-card">
-        <h3>&#x1F4AA; Session B — Upper + rotational core</h3>
-        <ul class="ex-list">
-          <li>Dumbbell row <span class="ex-sets">3 × 12 each</span></li>
-          <li>Push-up (or DB press) <span class="ex-sets">3 × 10</span></li>
-          <li>Pallof press <span class="ex-sets">3 × 12 each</span></li>
-          <li>Step-up with knee drive <span class="ex-sets">3 × 10 each</span></li>
-          <li>Band pull-apart <span class="ex-sets">3 × 15</span></li>
-          <li>Plank hold <span class="ex-sets">3 × 30–45 sec</span></li>
-        </ul>
-      </div>
-
-      <div class="strength-card">
-        <h3>&#x1F3CA; Swim-specific dryland</h3>
-        <ul class="ex-list">
-          <li>Lat pulldown or pull-up <span class="ex-sets">3 × 10</span></li>
-          <li>Dumbbell pull-over <span class="ex-sets">3 × 12</span></li>
-          <li>Shoulder external rotation <span class="ex-sets">2 × 15</span></li>
-          <li>Face pull <span class="ex-sets">3 × 15</span></li>
-          <li>Streamline hollow body hold <span class="ex-sets">3 × 20 sec</span></li>
-        </ul>
-      </div>
-
-      <div class="strength-card">
-        <h3>&#x26A0;&#xFE0F; Notes</h3>
-        <ul class="ex-list" style="list-style:none">
-          <li style="display:block;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)">Keep weights moderate. This isn't powerlifting prep.</li>
-          <li style="display:block;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)">Never do strength the day before a long run or brick.</li>
-          <li style="display:block;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)">Drop to 1×/week in taper weeks (14–15).</li>
-          <li style="display:block;padding:5px 0;font-size:12px;color:var(--muted)">Rotate A → B each session. Add dryland swim set monthly.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div style="font-size:13px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">Strength session log</div>
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 16px" id="strengthLogContainer">
-      <!-- generated by JS -->
-    </div>
-  </div>
-
-  <!-- ── INSIGHTS TAB ── -->
-  <div class="panel" id="tab-insights">
-    <div class="insight-list">
-      <div class="insight-item ins-good">
-        <span class="ins-icon" style="color:var(--teal)">📈</span>
-        <div>
-          <div class="ins-title">Run base is forming fast</div>
-          <div class="ins-body">Three runs this week (Jun 17–19), pace locked in at 6:10–6:15 /km across all distances. That consistency is a sign the aerobic base is real. Longest run hit 6.4 km — well ahead of plan for week 4.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-good">
-        <span class="ins-icon" style="color:var(--teal)">🏊</span>
-        <div>
-          <div class="ins-title">Swim HR is perfectly controlled</div>
-          <div class="ins-body">Jun 12 swim: 76% easy/zone 2 at avg 119 bpm. Jun 16: avg 129, started high and settled. The zone 2 HR spike issue on the run does not exist in the water — swimming suits her physiology well.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-good">
-        <span class="ins-icon" style="color:var(--blue)">🚴</span>
-        <div>
-          <div class="ins-title">First true zone 2 ride logged</div>
-          <div class="ins-body">Jun 18 indoor ride: 85% zone 2, avg HR 129, max 141. Previous Strava history showed almost all rides at 147+ avg. Something clicked — this is the model to replicate once per week alongside harder efforts.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-warn">
-        <span class="ins-icon" style="color:var(--amber)">⚠️</span>
-        <div>
-          <div class="ins-title">Three runs back-to-back is risky</div>
-          <div class="ins-body">Jun 17, 18, 19 — three consecutive run days early in base block. Nothing wrong if she felt fine, but watch for shin tightness or calf soreness over the next 48 hrs. One rest day between runs is safer until week 7+.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-warn">
-        <span class="ins-icon" style="color:var(--amber)">💓</span>
-        <div>
-          <div class="ins-title">Run HR still elevated — but don't fight it</div>
-          <div class="ins-body">Avg run HR 149–157 across recent sessions. This is zone 3 by numbers, but HR is stable (not climbing), effort is conversational, and pace is consistent. For now 6:10–6:15 is her effective easy pace regardless of what the zones say. It will come down with base building.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-alert">
-        <span class="ins-icon" style="color:var(--coral)">🎯</span>
-        <div>
-          <div class="ins-title">Swim frequency is the #1 priority</div>
-          <div class="ins-body">Two swims in the last 10 days is good. But she needs to lock in 2× per week consistently from now through week 13 — that's 9 more weeks of swim doubles. Missing swim weeks hurts more than missing run or bike weeks at this stage.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-good">
-        <span class="ins-icon" style="color:var(--teal)">💪</span>
-        <div>
-          <div class="ins-title">Strength habit is established — redirect the focus</div>
-          <div class="ins-body">67 weight training sessions in Strava history, trending up every year. The habit is there. Shift the session content toward hip stability, glutes, and single-leg work specifically to support the run and reduce injury risk.</div>
-        </div>
-      </div>
-      <div class="insight-item ins-good">
-        <span class="ins-icon" style="color:var(--teal)">🚶</span>
-        <div>
-          <div class="ins-title">Walking base is an underrated asset</div>
-          <div class="ins-body">843 walks, 25–36 km per week recently. This is meaningful aerobic volume and joint conditioning. It's a big reason running feels more accessible than it would for a true beginner — the connective tissue is ready even if running-specific muscles need work.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <footer>Built for Bek · Reeds Lake Sprint Triathlon · Sep 12, 2026</footer>
+</div>
 
 </div><!-- /shell -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────────
+const RACE   = new Date('2026-09-12T07:00:00');
+const START  = new Date('2026-05-26');
+const LSKEY  = 'bek_tri_v3';
 
-const RACE_DATE = new Date('2026-09-12T07:00:00');
-const START_DATE = new Date('2026-05-26');
-const STORAGE_KEY = 'bek_tri_v2';
-
+// ── data ──────────────────────────────────────────────────────────────────
 const weeks = [
-  {num:1,dates:'May 26–Jun 1',phase:'base',phaseLabel:'Base',note:'Get comfortable in the water. Walk/run only — no pressure on pace.',sessions:[
-    {sport:'swim',label:'Swim drills',sub:'25 min'},
-    {sport:'run',label:'Walk/run',sub:'20 min, flat'},
-    {sport:'bike',label:'Easy ride',sub:'45 min'},
-    {sport:'swim',label:'Easy swim',sub:'25 min'},
-    {sport:'run',label:'Walk/run',sub:'25 min'},
-    {sport:'bike',label:'Longer ride',sub:'60 min'},
-  ]},
-  {num:2,dates:'Jun 2–Jun 8',phase:'base',phaseLabel:'Base',note:'Try to swim a bit farther each session. Keep runs easy.',sessions:[
-    {sport:'swim',label:'Swim drills',sub:'30 min'},
-    {sport:'run',label:'Walk/run',sub:'25 min'},
-    {sport:'bike',label:'Easy ride',sub:'45 min'},
-    {sport:'swim',label:'Easy swim',sub:'30 min'},
-    {sport:'run',label:'Walk/run',sub:'30 min'},
-    {sport:'bike',label:'Moderate ride',sub:'60 min'},
-  ]},
-  {num:3,dates:'Jun 9–Jun 15',phase:'base',phaseLabel:'Base',note:'Try first continuous 100m swim without stopping. Still run/walk on the run.',sessions:[
-    {sport:'swim',label:'Swim + 100m',sub:'30 min'},
-    {sport:'run',label:'Walk/run',sub:'25 min'},
-    {sport:'bike',label:'Tempo effort',sub:'50 min'},
-    {sport:'swim',label:'Drills + easy',sub:'30 min'},
-    {sport:'run',label:'Walk/run',sub:'30 min'},
-    {sport:'bike',label:'Longer ride',sub:'75 min'},
-  ]},
-  {num:4,dates:'Jun 16–Jun 22',phase:'base',phaseLabel:'Base',note:'End of base block. Lighter week — let your body absorb the work.',sessions:[
-    {sport:'swim',label:'Easy swim',sub:'25 min'},
-    {sport:'run',label:'Easy run',sub:'20 min'},
-    {sport:'bike',label:'Easy spin',sub:'45 min'},
-    {sport:'swim',label:'Technique',sub:'25 min'},
-    {sport:'run',label:'Walk/run',sub:'25 min'},
-    {sport:'bike',label:'Moderate ride',sub:'60 min'},
-  ]},
-  {num:5,dates:'Jun 23–Jun 29',phase:'build1',phaseLabel:'Build 1',note:'Start running more than walking. First short brick this week.',sessions:[
-    {sport:'swim',label:'Swim sets',sub:'400m total'},
-    {sport:'run',label:'Easy run',sub:'25 min'},
-    {sport:'bike',label:'Tempo ride',sub:'50 min'},
-    {sport:'swim',label:'Open water',sub:'30 min if possible'},
-    {sport:'brick',label:'First brick!',sub:'45 min bike + 10 min run'},
-    {sport:'run',label:'Longer run',sub:'30 min'},
-  ]},
-  {num:6,dates:'Jun 30–Jul 6',phase:'build1',phaseLabel:'Build 1',note:'Bricks get a little longer. The jelly-leg feeling off the bike starts to fade.',sessions:[
-    {sport:'swim',label:'Swim sets',sub:'450m total'},
-    {sport:'run',label:'Easy run',sub:'30 min'},
-    {sport:'bike',label:'Interval ride',sub:'55 min'},
-    {sport:'swim',label:'Easy swim',sub:'30 min'},
-    {sport:'brick',label:'Brick',sub:'55 min bike + 12 min run'},
-    {sport:'run',label:'Longer run',sub:'35 min'},
-  ]},
-  {num:7,dates:'Jul 7–Jul 13',phase:'build1',phaseLabel:'Build 1',note:'Push swim to 500m continuous goal this week if ready.',sessions:[
-    {sport:'swim',label:'500m attempt',sub:'No stops'},
-    {sport:'run',label:'Run with pace',sub:'30 min'},
-    {sport:'bike',label:'Tempo ride',sub:'60 min'},
-    {sport:'swim',label:'Drills + sets',sub:'400m'},
-    {sport:'brick',label:'Brick',sub:'60 min bike + 15 min run'},
-    {sport:'run',label:'Longer run',sub:'35 min'},
-  ]},
-  {num:8,dates:'Jul 14–Jul 20',phase:'build1',phaseLabel:'Build 1',note:'Recovery week — pull back 20%. Let your body catch up.',sessions:[
-    {sport:'swim',label:'Easy swim',sub:'300m'},
-    {sport:'run',label:'Easy run',sub:'25 min'},
-    {sport:'bike',label:'Easy ride',sub:'45 min'},
-    {sport:'swim',label:'Technique',sub:'25 min'},
-    {sport:'run',label:'Easy run',sub:'25 min'},
-    {sport:'bike',label:'Moderate ride',sub:'60 min'},
-  ]},
-  {num:9,dates:'Jul 21–Jul 27',phase:'build2',phaseLabel:'Build 2',note:'Race-specific training begins. Open water every swim if possible.',sessions:[
-    {sport:'swim',label:'Open water',sub:'600m, practice sighting'},
-    {sport:'run',label:'Tempo run',sub:'30 min'},
-    {sport:'brick',label:'Brick',sub:'70 min bike + 18 min run'},
-    {sport:'swim',label:'Pool sets',sub:'600m'},
-    {sport:'bike',label:'Race-pace ride',sub:'75 min'},
-    {sport:'run',label:'Longer run',sub:'40 min'},
-  ]},
-  {num:10,dates:'Jul 28–Aug 3',phase:'build2',phaseLabel:'Build 2',note:'Practice transitions at home. Time yourself: helmet on, shoes clipped.',sessions:[
-    {sport:'swim',label:'Open water',sub:'650m'},
-    {sport:'run',label:'Tempo run',sub:'35 min'},
-    {sport:'brick',label:'Brick',sub:'75 min bike + 20 min run'},
-    {sport:'swim',label:'Pool sets',sub:'650m'},
-    {sport:'bike',label:'Race-pace ride',sub:'80 min'},
-    {sport:'run',label:'Longer run',sub:'45 min'},
-  ]},
-  {num:11,dates:'Aug 4–Aug 10',phase:'build2',phaseLabel:'Build 2',note:'Mock triathlon this week. Swim → bike → run at race effort, shorter distances.',sessions:[
-    {sport:'swim',label:'Open water',sub:'700m'},
-    {sport:'run',label:'Easy run',sub:'30 min'},
-    {sport:'swim',label:'Mock tri swim',sub:'Race distance'},
-    {sport:'brick',label:'Mock triathlon',sub:'Full swim-bike-run'},
-    {sport:'bike',label:'Easy spin recovery',sub:'30 min'},
-    {sport:'run',label:'Short run',sub:'20 min easy'},
-  ]},
-  {num:12,dates:'Aug 11–Aug 17',phase:'build2',phaseLabel:'Build 2',note:'Recovery week. Trust the process — you are ready for peak block.',sessions:[
-    {sport:'swim',label:'Easy swim',sub:'400m'},
-    {sport:'run',label:'Easy run',sub:'25 min'},
-    {sport:'bike',label:'Easy ride',sub:'50 min'},
-    {sport:'swim',label:'Technique',sub:'300m'},
-    {sport:'run',label:'Short run',sub:'20 min'},
-    {sport:'bike',label:'Moderate ride',sub:'60 min'},
-  ]},
-  {num:13,dates:'Aug 18–Aug 24',phase:'peak',phaseLabel:'Peak',note:'Highest volume week. Race-distance rehearsal. You have got this.',sessions:[
-    {sport:'swim',label:'Open water race dist',sub:'Full distance'},
-    {sport:'run',label:'Tempo run',sub:'40 min'},
-    {sport:'brick',label:'Long brick',sub:'Race bike dist + 25 min run'},
-    {sport:'swim',label:'Pool sets',sub:'800m'},
-    {sport:'bike',label:'Race-pace ride',sub:'Full race distance'},
-    {sport:'run',label:'Longest run',sub:'50 min'},
-  ]},
-  {num:14,dates:'Aug 25–Aug 31',phase:'taper',phaseLabel:'Taper',note:'Cut volume 40%. Keep intensity in a few sessions. Taper madness is real — resist extra workouts.',sessions:[
-    {sport:'swim',label:'Easy swim',sub:'400m'},
-    {sport:'run',label:'Easy run',sub:'25 min'},
-    {sport:'bike',label:'Short tempo',sub:'40 min'},
-    {sport:'swim',label:'Easy swim',sub:'300m'},
-    {sport:'run',label:'Short run',sub:'20 min'},
-    {sport:'bike',label:'Easy spin',sub:'30 min'},
-  ]},
-  {num:15,dates:'Sep 1–Sep 12',phase:'taper',phaseLabel:'Race Week',note:'Mon–Wed: short easy sessions. Thu: full rest + gear check. Fri: 15 min shake-out swim. Sat: rest. Sun: RACE!',sessions:[
-    {sport:'swim',label:'Easy swim',sub:'20 min Mon'},
-    {sport:'run',label:'Short run',sub:'20 min Tue'},
-    {sport:'bike',label:'Easy spin',sub:'30 min Wed'},
-    {sport:'swim',label:'Shake-out',sub:'15 min Fri'},
-    {sport:'run',label:'Gear check',sub:'Thu — full rest'},
-    {sport:'race',label:'RACE DAY',sub:'Sep 12 — go!'},
-  ]},
+  {n:1,  d:'May 26 – Jun 1',  ph:'base',   pl:'Base',     note:'Get comfortable in the water. Walk/run only — no pressure on pace yet.',
+   s:[{sp:'swim',l:'Swim drills',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'20 min'},{sp:'bike',l:'Easy ride',sub:'45 min'},{sp:'swim',l:'Easy swim',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Longer ride',sub:'60 min'}]},
+  {n:2,  d:'Jun 2 – Jun 8',   ph:'base',   pl:'Base',     note:'Try to swim a bit farther each session. Keep runs easy.',
+   s:[{sp:'swim',l:'Swim drills',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Easy ride',sub:'45 min'},{sp:'swim',l:'Easy swim',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'30 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
+  {n:3,  d:'Jun 9 – Jun 15',  ph:'base',   pl:'Base',     note:'Try first continuous 100m swim without stopping. Still walk/run on the run.',
+   s:[{sp:'swim',l:'Swim + 100m',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Tempo effort',sub:'50 min'},{sp:'swim',l:'Drills + easy',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'30 min'},{sp:'bike',l:'Longer ride',sub:'75 min'}]},
+  {n:4,  d:'Jun 16 – Jun 22', ph:'base',   pl:'Base',     note:'Recovery week — lighter load. Let the body absorb the first three weeks.',
+   s:[{sp:'swim',l:'Easy swim',sub:'25 min'},{sp:'run',l:'Easy run',sub:'20 min'},{sp:'bike',l:'Easy spin',sub:'45 min'},{sp:'swim',l:'Technique',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
+  {n:5,  d:'Jun 23 – Jun 29', ph:'build1', pl:'Build 1',  note:'Start running more than walking. First short brick this week.',
+   s:[{sp:'swim',l:'Swim sets',sub:'400m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Tempo ride',sub:'50 min'},{sp:'swim',l:'Open water',sub:'30 min if possible'},{sp:'brick',l:'First brick!',sub:'45 min bike + 10 min run'},{sp:'run',l:'Longer run',sub:'30 min'}]},
+  {n:6,  d:'Jun 30 – Jul 6',  ph:'build1', pl:'Build 1',  note:'Bricks get longer. The jelly-leg feeling off the bike starts fading.',
+   s:[{sp:'swim',l:'Swim sets',sub:'450m'},{sp:'run',l:'Easy run',sub:'30 min'},{sp:'bike',l:'Interval ride',sub:'55 min'},{sp:'swim',l:'Easy swim',sub:'30 min'},{sp:'brick',l:'Brick',sub:'55 min bike + 12 min run'},{sp:'run',l:'Longer run',sub:'35 min'}]},
+  {n:7,  d:'Jul 7 – Jul 13',  ph:'build1', pl:'Build 1',  note:'Push swim to 500m continuous this week if ready.',
+   s:[{sp:'swim',l:'500m attempt',sub:'No stops'},{sp:'run',l:'Run with pace',sub:'30 min'},{sp:'bike',l:'Tempo ride',sub:'60 min'},{sp:'swim',l:'Drills + sets',sub:'400m'},{sp:'brick',l:'Brick',sub:'60 min bike + 15 min run'},{sp:'run',l:'Longer run',sub:'35 min'}]},
+  {n:8,  d:'Jul 14 – Jul 20', ph:'build1', pl:'Build 1',  note:'Recovery week — pull back 20%. Let the body catch up.',
+   s:[{sp:'swim',l:'Easy swim',sub:'300m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Easy ride',sub:'45 min'},{sp:'swim',l:'Technique',sub:'25 min'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
+  {n:9,  d:'Jul 21 – Jul 27', ph:'build2', pl:'Build 2',  note:'Race-specific training begins. Open water every swim if possible.',
+   s:[{sp:'swim',l:'Open water',sub:'600m, practice sighting'},{sp:'run',l:'Tempo run',sub:'30 min'},{sp:'brick',l:'Brick',sub:'70 min bike + 18 min run'},{sp:'swim',l:'Pool sets',sub:'600m'},{sp:'bike',l:'Race-pace ride',sub:'75 min'},{sp:'run',l:'Longer run',sub:'40 min'}]},
+  {n:10, d:'Jul 28 – Aug 3',  ph:'build2', pl:'Build 2',  note:'Practice transitions at home. Time yourself: helmet, shoes, laces.',
+   s:[{sp:'swim',l:'Open water',sub:'650m'},{sp:'run',l:'Tempo run',sub:'35 min'},{sp:'brick',l:'Brick',sub:'75 min bike + 20 min run'},{sp:'swim',l:'Pool sets',sub:'650m'},{sp:'bike',l:'Race-pace ride',sub:'80 min'},{sp:'run',l:'Longer run',sub:'45 min'}]},
+  {n:11, d:'Aug 4 – Aug 10',  ph:'build2', pl:'Build 2',  note:'Mock triathlon this week — swim → bike → run at race effort, shorter distances.',
+   s:[{sp:'swim',l:'Open water',sub:'700m'},{sp:'run',l:'Easy run',sub:'30 min'},{sp:'swim',l:'Mock tri swim',sub:'Race distance'},{sp:'brick',l:'Mock triathlon',sub:'Full swim-bike-run'},{sp:'bike',l:'Easy spin',sub:'30 min recovery'},{sp:'run',l:'Short run',sub:'20 min easy'}]},
+  {n:12, d:'Aug 11 – Aug 17', ph:'build2', pl:'Build 2',  note:'Recovery week. Trust the process — you are ready for peak block.',
+   s:[{sp:'swim',l:'Easy swim',sub:'400m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Easy ride',sub:'50 min'},{sp:'swim',l:'Technique',sub:'300m'},{sp:'run',l:'Short run',sub:'20 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
+  {n:13, d:'Aug 18 – Aug 24', ph:'peak',   pl:'Peak',     note:'Highest volume week. Race-distance rehearsal. You have got this.',
+   s:[{sp:'swim',l:'Open water race dist',sub:'Full distance'},{sp:'run',l:'Tempo run',sub:'40 min'},{sp:'brick',l:'Long brick',sub:'Race bike dist + 25 min run'},{sp:'swim',l:'Pool sets',sub:'800m'},{sp:'bike',l:'Race-pace ride',sub:'Full distance'},{sp:'run',l:'Longest run',sub:'50 min'}]},
+  {n:14, d:'Aug 25 – Aug 31', ph:'taper',  pl:'Taper',    note:'Cut volume 40%. Keep some intensity. Taper madness is real — do not add workouts.',
+   s:[{sp:'swim',l:'Easy swim',sub:'400m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Short tempo',sub:'40 min'},{sp:'swim',l:'Easy swim',sub:'300m'},{sp:'run',l:'Short run',sub:'20 min'},{sp:'bike',l:'Easy spin',sub:'30 min'}]},
+  {n:15, d:'Sep 1 – Sep 12',  ph:'taper',  pl:'Race Week', note:'Mon–Wed: short easy sessions. Thu: full rest + gear check. Fri: 15 min shake-out swim. Sat: rest. Sun: race!',
+   s:[{sp:'swim',l:'Easy swim',sub:'20 min Mon'},{sp:'run',l:'Short run',sub:'20 min Tue'},{sp:'bike',l:'Easy spin',sub:'30 min Wed'},{sp:'swim',l:'Shake-out',sub:'15 min Fri'},{sp:'run',l:'Gear check',sub:'Thu — full rest'},{sp:'race',l:'RACE DAY',sub:'Sep 12 — go!'}]},
 ];
 
-const recentActivities = [
-  {date:'Jun 19',name:'Morning Run',sport:'run',dist:'6.4 km',time:'40:18',hr:'151',notes:'Longest run yet. Consistent 6:16 pace.'},
-  {date:'Jun 18',name:'Night Run',sport:'run',dist:'2.0 km',time:'12:26',hr:'—',notes:'2am short effort. Same pace as longer runs.'},
-  {date:'Jun 18',name:'Zwift Loop de Loop',sport:'ride',dist:'13.0 km',time:'33:08',hr:'—',notes:'83W avg, 82 rpm cadence.'},
-  {date:'Jun 18',name:'Indoor Ride',sport:'ride',dist:'—',time:'33:13',hr:'129',notes:'85% zone 2. First true easy ride.'},
-  {date:'Jun 17',name:'Evening Run',sport:'run',dist:'4.9 km',time:'29:57',hr:'151',notes:'65% zone 3, 35% zone 4. Stable HR.'},
-  {date:'Jun 16',name:'Morning Swim 7',sport:'swim',dist:'1,025 m',time:'35:23',hr:'129',notes:'22 laps. HR settled quickly. 200m set.'},
-  {date:'Jun 12',name:'Morning Swim 8',sport:'swim',dist:'1,150 m',time:'49:40',hr:'119',notes:'76% zone 2. Best swim HR profile yet.'},
-  {date:'Jun 7',name:'Run',sport:'run',dist:'4.2 km',time:'27:03',hr:'157',notes:''},
-  {date:'Jun 5',name:'Run',sport:'run',dist:'4.8 km',time:'31:13',hr:'155',notes:''},
-  {date:'May 27',name:'Run',sport:'run',dist:'4.8 km',time:'30:31',hr:'159',notes:''},
-  {date:'May 14',name:'Run',sport:'run',dist:'6.4 km',time:'62:03',hr:'117',notes:'Slow walk/run effort.'},
-  {date:'May 1',name:'Run',sport:'run',dist:'5.1 km',time:'32:15',hr:'178',notes:'HR too high — went too hard.'},
+const log = [
+  {date:'Jun 19',name:'Morning Run',  sp:'run',   dist:'6.4 km', time:'40:18',hr:'151',notes:'Longest run yet. 6:16/km pace.'},
+  {date:'Jun 18',name:'Night Run',    sp:'run',   dist:'2.0 km', time:'12:26',hr:'—',  notes:'2am. Same pace as longer runs.'},
+  {date:'Jun 18',name:'Zwift Loop',   sp:'ride',  dist:'13.0 km',time:'33:08',hr:'—',  notes:'83W avg, 82 rpm cadence.'},
+  {date:'Jun 18',name:'Indoor Ride',  sp:'ride',  dist:'—',      time:'33:13',hr:'129', notes:'85% zone 2. First true easy ride.'},
+  {date:'Jun 17',name:'Evening Run',  sp:'run',   dist:'4.9 km', time:'29:57',hr:'151', notes:'65% Z3, 35% Z4. Stable HR.'},
+  {date:'Jun 16',name:'Morning Swim 7',sp:'swim', dist:'1,025 m',time:'35:23',hr:'129', notes:'22 laps. HR settled quickly. 200m set.'},
+  {date:'Jun 12',name:'Morning Swim 8',sp:'swim', dist:'1,150 m',time:'49:40',hr:'119', notes:'76% zone 2. Best swim HR yet.'},
+  {date:'Jun 7', name:'Run',          sp:'run',   dist:'4.2 km', time:'27:03',hr:'157', notes:''},
+  {date:'Jun 5', name:'Run',          sp:'run',   dist:'4.8 km', time:'31:13',hr:'155', notes:''},
+  {date:'May 27',name:'Run',          sp:'run',   dist:'4.8 km', time:'30:31',hr:'159', notes:''},
+  {date:'May 14',name:'Run',          sp:'run',   dist:'6.4 km', time:'62:03',hr:'117', notes:'Slow walk/run.'},
+  {date:'May 1', name:'Run',          sp:'run',   dist:'5.1 km', time:'32:15',hr:'178', notes:'HR too high — went out too hard.'},
 ];
 
-const strengthDates = [];
-const now = new Date();
-for (let d = new Date('2026-05-26'); d <= now; d.setDate(d.getDate() + 1)) {
-  const dow = d.getDay();
-  if (dow === 2 || dow === 5) {
-    strengthDates.push(new Date(d));
-  }
+// ── state ─────────────────────────────────────────────────────────────────
+let state = {weeks:{}, sessions:{}, strength:{}};
+function sk(w,s){return `w${w}s${s}`}
+
+function load(){
+  try{ const v=localStorage.getItem(LSKEY); if(v) state=JSON.parse(v); }catch(e){}
+}
+function save(){
+  try{ localStorage.setItem(LSKEY,JSON.stringify(state)); }catch(e){}
 }
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-let state = { weeks: {}, sessions: {}, strength: {} };
-
-async function loadState() {
-  try {
-    const r = await Promise.resolve({value: localStorage.getItem(STORAGE_KEY)});
-    if (r && r.value) state = JSON.parse(r.value);
-  } catch(e) {}
-}
-
-async function saveState() {
-  try { await Promise.resolve(localStorage.setItem(STORAGE_KEY, JSON.stringify(state))); } catch(e) {}
-}
-
-function sessKey(w, s) { return `w${w}_s${s}`; }
-
-// ── COUNTDOWN ─────────────────────────────────────────────────────────────
-function pad2(n) { return String(n).padStart(2, '0'); }
-
-function updateCountdown() {
-  const diff = RACE_DATE - new Date();
-  if (diff <= 0) {
-    document.getElementById('cd-days').textContent = '00';
-    document.getElementById('cd-hrs').textContent = '00';
-    document.getElementById('cd-min').textContent = '00';
-    document.getElementById('cd-sec').textContent = '00';
-    return;
-  }
-  const days = Math.floor(diff / 86400000);
-  const hrs  = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent = pad2(days);
-  document.getElementById('cd-hrs').textContent  = pad2(hrs);
-  document.getElementById('cd-min').textContent  = pad2(mins);
-  document.getElementById('cd-sec').textContent  = pad2(secs);
-
-  const totalMs = RACE_DATE - START_DATE;
-  const elapsed = new Date() - START_DATE;
-  const pct = Math.min(100, Math.max(0, Math.round(elapsed / totalMs * 100)));
-  document.getElementById('overall-fill').style.width = pct + '%';
-  document.getElementById('pct-label').textContent = pct + '% complete';
-
-  // current week
-  const elapsedDays = Math.floor(elapsed / 86400000);
-  const currentWeek = Math.min(15, Math.floor(elapsedDays / 7) + 1);
-  document.getElementById('week-label').textContent = `Week ${currentWeek} of 15`;
+// ── countdown ─────────────────────────────────────────────────────────────
+function p(n){return String(n).padStart(2,'0')}
+function tick(){
+  const diff = RACE - new Date();
+  if(diff<=0){ ['d','h','m','s'].forEach(x=>document.getElementById('cd-'+x).textContent='00'); return; }
+  document.getElementById('cd-d').textContent = p(Math.floor(diff/86400000));
+  document.getElementById('cd-h').textContent = p(Math.floor(diff%86400000/3600000));
+  document.getElementById('cd-m').textContent = p(Math.floor(diff%3600000/60000));
+  document.getElementById('cd-s').textContent = p(Math.floor(diff%60000/1000));
+  const pct = Math.min(100,Math.max(0,Math.round((new Date()-START)/(RACE-START)*100)));
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-pct').textContent = pct+'% done';
+  const elDays = Math.floor((new Date()-START)/86400000);
+  const wkNum  = Math.min(15,Math.floor(elDays/7)+1);
+  document.getElementById('week-name').textContent = `Week ${wkNum} of 15`;
   const phases = ['Base','Base','Base','Base','Build 1','Build 1','Build 1','Build 1','Build 2','Build 2','Build 2','Build 2','Peak','Taper','Race Week'];
-  document.getElementById('phase-label').textContent = phases[currentWeek - 1] || 'Race Week';
+  document.getElementById('phase-name').textContent = phases[wkNum-1]||'Race Week';
 }
 
-// ── STATS ─────────────────────────────────────────────────────────────────
-function updateStats() {
-  const doneWeeks = weeks.filter(w => state.weeks[w.num]).length;
-  let sessDone = 0;
-  weeks.forEach(w => w.sessions.forEach((_,i) => { if(state.sessions[sessKey(w.num,i)]) sessDone++; }));
-  const strengthDone = Object.values(state.strength).filter(Boolean).length;
-  document.getElementById('st-weeks').textContent = `${doneWeeks}/15`;
-  document.getElementById('st-sess').textContent = sessDone;
-  document.getElementById('st-strength').textContent = strengthDone;
+// ── stats ─────────────────────────────────────────────────────────────────
+function updateStats(){
+  const dw = weeks.filter(w=>state.weeks[w.n]).length;
+  let ds=0; weeks.forEach(w=>w.s.forEach((_,i)=>{ if(state.sessions[sk(w.n,i)]) ds++; }));
+  const dstr = Object.values(state.strength).filter(Boolean).length;
+  document.getElementById('st-wk').textContent   = dw+'/15';
+  document.getElementById('st-sess').textContent = ds;
+  document.getElementById('st-str').textContent  = dstr;
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────
-function showTab(id) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
+// ── nav ───────────────────────────────────────────────────────────────────
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
 }
 
-// ── PLAN ──────────────────────────────────────────────────────────────────
-const sportColors = {swim:'sp-swim',run:'sp-run',bike:'sp-ride',brick:'sp-brick',race:'sp-swim',strength:'sp-strength'};
-const phaseSeps = {base:'Phase 1 — base (weeks 1–4)',build1:'Phase 2 — build 1 (weeks 5–8)',build2:'Phase 3 — build 2 (weeks 9–12)',peak:'Phase 4 — peak (week 13)',taper:'Phase 5 — taper & race (weeks 14–15)'};
+// ── plan ──────────────────────────────────────────────────────────────────
+const sportDot = {swim:'var(--coral)',run:'var(--teal)',bike:'var(--blue)',brick:'var(--purple)',race:'var(--amber)'};
+const phaseMeta = {
+  base:  {label:'Phase 1 — base (weeks 1–4)'},
+  build1:{label:'Phase 2 — build 1 (weeks 5–8)'},
+  build2:{label:'Phase 3 — build 2 (weeks 9–12)'},
+  peak:  {label:'Phase 4 — peak (week 13)'},
+  taper: {label:'Phase 5 — taper & race (weeks 14–15)'},
+};
 
-function buildPlan() {
-  const container = document.getElementById('planContainer');
-  let html = '';
-  let lastPhase = '';
-  const elapsedDays = Math.floor((new Date() - START_DATE) / 86400000);
-  const currentWeekNum = Math.min(15, Math.floor(elapsedDays / 7) + 1);
+function buildPlan(){
+  const c = document.getElementById('plan-container');
+  const elDays = Math.floor((new Date()-START)/86400000);
+  const curWk  = Math.min(15,Math.floor(elDays/7)+1);
+  let lastPh = '', html = '';
 
-  weeks.forEach(w => {
-    if (w.phase !== lastPhase) {
-      html += `<div class="phase-sep">${phaseSeps[w.phase] || ''}</div>`;
-      if (lastPhase === '') html += `<div class="week-grid" id="wg-${w.phase}">`;
-      else html += `</div><div class="week-grid" id="wg-${w.phase}">`;
-      lastPhase = w.phase;
+  weeks.forEach(w=>{
+    if(w.ph!==lastPh){
+      html+=`<div class="phase-label">${phaseMeta[w.ph].label}</div>`;
+      lastPh=w.ph;
     }
-    const done = !!state.weeks[w.num];
-    const isCurrent = w.num === currentWeekNum;
-    html += `
-    <div class="week-card${done?' completed':''}${isCurrent?' current':''}" id="wcard-${w.num}">
-      <div class="wc-header" onclick="toggleWeekExpand(${w.num})">
-        <span class="wc-num">WK ${String(w.num).padStart(2,'0')}</span>
-        <span class="wc-title">${w.dates}</span>
-        <span class="wc-phase ph-${w.phase}">${w.phaseLabel}</span>
-        <div class="wc-check${done?' done':''}" onclick="event.stopPropagation();toggleWeek(${w.num})" title="Mark week complete">
-          ${done ? '✓' : ''}
-        </div>
-        <span class="chevron" id="chev-${w.num}">▾</span>
+    const done = !!state.weeks[w.n];
+    const cur  = w.n===curWk;
+    html+=`<div class="week${done?' done':''}${cur?' current':''}" id="wk-${w.n}">
+      <div class="week-top" onclick="toggleExpand(${w.n})">
+        <span class="wk-num">WK ${String(w.n).padStart(2,'0')}</span>
+        <span class="wk-dates">${w.d}</span>
+        <span class="wk-phase ph-${w.ph}">${w.pl}</span>
+        <div class="wk-tick${done?' done':''}" onclick="event.stopPropagation();toggleWeek(${w.n})" title="Mark week done">${done?'✓':''}</div>
+        <span class="wk-arrow" id="arr-${w.n}">▾</span>
       </div>
-      <div class="wc-body" id="wb-${w.num}">
-        <div class="sessions-grid">
-          ${w.sessions.map((s,i) => {
-            const k = sessKey(w.num, i);
-            const sdone = !!state.sessions[k];
-            return `<div class="session-cell${sdone?' done':''}" id="scell-${k}" onclick="toggleSession(${w.num},${i})">
-              <div class="sess-cb${sdone?' checked':''}">${sdone?'✓':''}</div>
-              <div class="sess-text">
-                <div class="sl">${s.label}</div>
-                <div class="ss">${s.sub}</div>
-              </div>
+      <div class="week-body" id="wb-${w.n}">
+        <div class="sessions">
+          ${w.s.map((s,i)=>{
+            const k=sk(w.n,i), sd=!!state.sessions[k];
+            return `<div class="sess${sd?' done':''}" id="sc-${k}" onclick="toggleSess(${w.n},${i})">
+              <span class="sport-dot" style="background:${sportDot[s.sp]||'var(--muted)'}"></span>
+              <div class="sess-cb${sd?' done':''}" id="cb-${k}">${sd?'✓':''}</div>
+              <div class="sess-info"><div class="sl">${s.l}</div><div class="ss">${s.sub}</div></div>
             </div>`;
           }).join('')}
         </div>
-        <div class="wc-note">${w.note}</div>
+        <div class="week-note">${w.note}</div>
       </div>
     </div>`;
   });
-  html += '</div>';
-  container.innerHTML = html;
+  c.innerHTML = html;
+  // auto-open current week
+  setTimeout(()=>openWeek(curWk), 80);
 }
 
-function toggleWeekExpand(num) {
-  const body = document.getElementById('wb-' + num);
-  const chev = document.getElementById('chev-' + num);
-  const open = body.classList.toggle('open');
-  chev.classList.toggle('open', open);
-  chev.textContent = open ? '▴' : '▾';
+function openWeek(n){
+  const body=document.getElementById('wb-'+n);
+  const arr=document.getElementById('arr-'+n);
+  if(!body) return;
+  body.classList.add('open');
+  arr.classList.add('open');
+  arr.textContent='▴';
 }
 
-function toggleWeek(num) {
-  state.weeks[num] = !state.weeks[num];
-  const card = document.getElementById('wcard-' + num);
-  const chk = card.querySelector('.wc-check');
-  if (state.weeks[num]) { card.classList.add('completed'); chk.classList.add('done'); chk.textContent='✓'; }
-  else { card.classList.remove('completed'); chk.classList.remove('done'); chk.textContent=''; }
-  updateStats(); saveState();
+function toggleExpand(n){
+  const body=document.getElementById('wb-'+n);
+  const arr=document.getElementById('arr-'+n);
+  const open=body.classList.toggle('open');
+  arr.classList.toggle('open',open);
+  arr.textContent=open?'▴':'▾';
 }
 
-function toggleSession(wnum, sidx) {
-  const k = sessKey(wnum, sidx);
-  state.sessions[k] = !state.sessions[k];
-  const cell = document.getElementById('scell-' + k);
-  const cb = cell.querySelector('.sess-cb');
-  if (state.sessions[k]) { cell.classList.add('done'); cb.classList.add('checked'); cb.textContent='✓'; }
-  else { cell.classList.remove('done'); cb.classList.remove('checked'); cb.textContent=''; }
-  updateStats(); saveState();
+function toggleWeek(n){
+  state.weeks[n]=!state.weeks[n];
+  const el=document.getElementById('wk-'+n);
+  const tk=el.querySelector('.wk-tick');
+  el.classList.toggle('done',!!state.weeks[n]);
+  tk.classList.toggle('done',!!state.weeks[n]);
+  tk.textContent=state.weeks[n]?'✓':'';
+  updateStats(); save();
 }
 
-// ── LOG ───────────────────────────────────────────────────────────────────
-function buildLog() {
-  const tbody = document.getElementById('logBody');
-  const sportLabels = {run:'Run',ride:'Ride',swim:'Swim',walk:'Walk',strength:'Strength',brick:'Brick'};
-  tbody.innerHTML = recentActivities.map(a => {
-    const hrNum = parseInt(a.hr);
-    const hrClass = isNaN(hrNum) ? '' : hrNum > 165 ? 'hr-high' : hrNum > 145 ? 'hr-mid' : 'hr-low';
+function toggleSess(wn,si){
+  const k=sk(wn,si);
+  state.sessions[k]=!state.sessions[k];
+  const cell=document.getElementById('sc-'+k);
+  const cb=document.getElementById('cb-'+k);
+  const on=state.sessions[k];
+  cell.classList.toggle('done',on);
+  cb.classList.toggle('done',on);
+  cb.textContent=on?'✓':'';
+  updateStats(); save();
+}
+
+// ── log ───────────────────────────────────────────────────────────────────
+function buildLog(){
+  document.getElementById('log-body').innerHTML = log.map(a=>{
+    const hr=parseInt(a.hr);
+    const hrc=isNaN(hr)?'':hr>165?'hr-high':hr>145?'hr-mid':'hr-low';
     return `<tr>
       <td class="mono" style="color:var(--muted)">${a.date}</td>
       <td style="font-weight:500">${a.name}</td>
-      <td><span class="sport-pill ${sportColors[a.sport]||'sp-walk'}">${sportLabels[a.sport]||a.sport}</span></td>
+      <td><span class="pill pill-${a.sp}">${a.sp.charAt(0).toUpperCase()+a.sp.slice(1)}</span></td>
       <td class="mono">${a.dist}</td>
       <td class="mono">${a.time}</td>
-      <td class="hr-val ${hrClass}">${a.hr}</td>
-      <td style="font-size:12px;color:var(--muted);max-width:220px">${a.notes}</td>
+      <td class="mono ${hrc}">${a.hr}</td>
+      <td style="font-size:12px;color:var(--muted)">${a.notes}</td>
     </tr>`;
   }).join('');
 }
 
-// ── STRENGTH LOG ──────────────────────────────────────────────────────────
-function buildStrengthLog() {
-  const container = document.getElementById('strengthLogContainer');
-  const sessions = strengthDates.slice(-16).reverse();
-  container.innerHTML = sessions.map((d,i) => {
-    const key = 's_' + d.toISOString().slice(0,10);
-    const done = !!state.strength[key];
-    const isA = i % 2 === 0;
-    const dStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',weekday:'short'});
-    return `<div class="strength-log-row">
-      <span class="s-date">${dStr}</span>
-      <span class="s-focus">Session ${isA?'A':'B'} — ${isA?'Lower + core':'Upper + rotational'}</span>
-      <div class="s-check${done?' done':''}" onclick="toggleStrength('${key}',this)" title="Mark done">
-        ${done?'✓':''}
+// ── strength log ──────────────────────────────────────────────────────────
+function buildStrLog(){
+  const now=new Date();
+  const rows=[];
+  for(let d=new Date('2026-05-26'); d<=now; d.setDate(d.getDate()+1)){
+    if(d.getDay()===2||d.getDay()===5) rows.push(new Date(d));
+  }
+  const recent=rows.slice(-16).reverse();
+  document.getElementById('str-log-body').innerHTML = recent.map((d,i)=>{
+    const key='str_'+d.toISOString().slice(0,10);
+    const done=!!state.strength[key];
+    const isA=i%2===0;
+    const ds=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    return `<div class="str-row">
+      <span class="str-date">${ds}</span>
+      <div class="str-focus">
+        <div class="sf-type">Session ${isA?'A':'B'}</div>
+        <div class="sf-sub">${isA?'Lower body + core':'Upper + rotational core'}</div>
       </div>
+      <div class="str-cb${done?' done':''}" onclick="toggleStr('${key}',this)">${done?'✓':''}</div>
     </div>`;
   }).join('');
 }
 
-function toggleStrength(key, el) {
-  state.strength[key] = !state.strength[key];
-  if (state.strength[key]) { el.classList.add('done'); el.textContent='✓'; }
-  else { el.classList.remove('done'); el.textContent=''; }
-  updateStats(); saveState();
+function toggleStr(key,el){
+  state.strength[key]=!state.strength[key];
+  el.classList.toggle('done',!!state.strength[key]);
+  el.textContent=state.strength[key]?'✓':'';
+  updateStats(); save();
 }
 
-// ── CHARTS ────────────────────────────────────────────────────────────────
-function buildCharts() {
-  const gridC = 'rgba(255,255,255,0.06)';
-  const tickC = '#7a8099';
-  const base = {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{
-    x:{grid:{color:gridC},ticks:{color:tickC,font:{size:10},maxRotation:45,autoSkip:false}},
-    y:{grid:{color:gridC},ticks:{color:tickC,font:{size:10}}}
-  }};
+// ── charts ────────────────────────────────────────────────────────────────
+function buildCharts(){
+  const gc='rgba(255,255,255,0.05)', tc='#7a8099';
+  const base={responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10},maxRotation:45,autoSkip:true}},
+            y:{grid:{color:gc},ticks:{color:tc,font:{size:10}}}}};
 
-  // Volume chart
-  const vLabels = ['S\'24','O\'24','N\'24','D\'24','J\'25','F\'25','M\'25','A\'25','M\'25','J\'25','J\'25','A\'25','S\'25','O\'25','N\'25','D\'25','J\'26','F\'26','M\'26','A\'26','M\'26','J\'26'];
-  const vBike   = [1,7,2,17,22,20,25,17,12,11,6,9,9,21,26,18,12,11,35,31,25,6];
-  new Chart(document.getElementById('volumeChart'),{type:'bar',data:{labels:vLabels,datasets:[
-    {label:'Bike',data:vBike,backgroundColor:'#5b8dee',borderRadius:3},
-  ]},options:{...base,plugins:{legend:{display:false}},scales:{x:{...base.scales.x,ticks:{...base.scales.x.ticks,autoSkip:true}},y:base.scales.y}}});
+  new Chart(document.getElementById('c-bike'),{type:'bar',
+    data:{labels:['S\'24','O\'24','N\'24','D\'24','J\'25','F\'25','M\'25','A\'25','M\'25','J\'25','J\'25','A\'25','S\'25','O\'25','N\'25','D\'25','J\'26','F\'26','M\'26','A\'26','M\'26','J\'26'],
+      datasets:[{data:[1,7,2,17,22,20,25,17,12,11,6,9,9,21,26,18,12,11,35,31,25,6],backgroundColor:'#5b8dee',borderRadius:3}]},
+    options:base});
 
-  // Run progression
-  new Chart(document.getElementById('runChart'),{type:'line',data:{
-    labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17','Jun 19'],
-    datasets:[{label:'Distance (km)',data:[3.14,3.62,5.07,6.43,4.83,4.84,4.24,4.86,6.44],
-      borderColor:'#3ab8a0',backgroundColor:'rgba(58,184,160,0.08)',borderWidth:2,pointRadius:4,fill:true,tension:0.3}]
-  },options:{...base}});
+  new Chart(document.getElementById('c-run'),{type:'line',
+    data:{labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17','Jun 19'],
+      datasets:[{data:[3.14,3.62,5.07,6.43,4.83,4.84,4.24,4.86,6.44],borderColor:'#3ab8a0',backgroundColor:'rgba(58,184,160,0.07)',borderWidth:2,pointRadius:3,fill:true,tension:0.3}]},
+    options:base});
 
-  // Swim
-  new Chart(document.getElementById('swimChart'),{type:'bar',data:{
-    labels:['Feb\'25','Jun\'25 (1)','Jun\'25 (2)','Jun 12','Jun 16'],
-    datasets:[{label:'Distance (m)',data:[370,480,663,1150,1025],backgroundColor:'#e8603a',borderRadius:4}]
-  },options:{...base}});
+  new Chart(document.getElementById('c-swim'),{type:'bar',
+    data:{labels:['Feb\'25','Jun\'25(a)','Jun\'25(b)','Jun 12','Jun 16'],
+      datasets:[{data:[370,480,663,1150,1025],backgroundColor:'#e8603a',borderRadius:4}]},
+    options:base});
 
-  // HR dist
-  new Chart(document.getElementById('hrChart'),{type:'bar',data:{
-    labels:['<130','130–140','140–150','150–160','160–170','170+'],
-    datasets:[{label:'Rides',data:[5,14,66,100,60,11],backgroundColor:['#3ab8a0','#5b8dee','#5b8dee','#e8b43a','#e8603a','#e8603a'],borderRadius:3}]
-  },options:{...base,indexAxis:'y',scales:{x:{...base.scales.x},y:{...base.scales.y,ticks:{color:tickC,font:{size:11}}}}}});
+  new Chart(document.getElementById('c-hr'),{type:'bar',
+    data:{labels:['<130','130–140','140–150','150–160','160–170','170+'],
+      datasets:[{data:[5,14,66,100,60,11],backgroundColor:['#3ab8a0','#5b8dee','#5b8dee','#e8b43a','#e8603a','#e8603a'],borderRadius:3}]},
+    options:{...base,indexAxis:'y'}});
 
-  // Run HR
-  new Chart(document.getElementById('runHrChart'),{type:'line',data:{
-    labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17'],
-    datasets:[{label:'Avg HR',data:[163,158,178,117,159,155,157,151],
-      borderColor:'#e8603a',backgroundColor:'rgba(232,96,58,0.07)',borderWidth:2,pointRadius:4,fill:true,tension:0.2}]
-  },options:{...base,scales:{x:{...base.scales.x},y:{...base.scales.y,suggestedMin:100,suggestedMax:190}}}});
+  new Chart(document.getElementById('c-runhr'),{type:'line',
+    data:{labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17'],
+      datasets:[{data:[163,158,178,117,159,155,157,151],borderColor:'#e8603a',backgroundColor:'rgba(232,96,58,0.07)',borderWidth:2,pointRadius:4,fill:true,tension:0.2}]},
+    options:{...base,scales:{...base.scales,y:{...base.scales.y,suggestedMin:100,suggestedMax:190}}}});
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────
-async function init() {
-  await loadState();
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-  buildPlan();
-  buildLog();
-  buildCharts();
-  buildStrengthLog();
-  updateStats();
-  // auto-open current week
-  const elapsedDays = Math.floor((new Date() - START_DATE) / 86400000);
-  const currentWeek = Math.min(15, Math.floor(elapsedDays / 7) + 1);
-  setTimeout(() => toggleWeekExpand(currentWeek), 100);
-}
-
-init();
+// ── init ──────────────────────────────────────────────────────────────────
+load();
+tick(); setInterval(tick,1000);
+buildPlan();
+buildLog();
+buildStrLog();
+buildCharts();
+updateStats();
 </script>
 </body>
 </html>
