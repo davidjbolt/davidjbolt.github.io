@@ -987,13 +987,13 @@ let state = { weeks: {}, sessions: {}, strength: {} };
 
 async function loadState() {
   try {
-    const r = await window.storage.get(STORAGE_KEY);
+    const r = await Promise.resolve({value: localStorage.getItem(STORAGE_KEY)});
     if (r && r.value) state = JSON.parse(r.value);
   } catch(e) {}
 }
 
 async function saveState() {
-  try { await window.storage.set(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  try { await Promise.resolve(localStorage.setItem(STORAGE_KEY, JSON.stringify(state))); } catch(e) {}
 }
 
 function sessKey(w, s) { return `w${w}_s${s}`; }
