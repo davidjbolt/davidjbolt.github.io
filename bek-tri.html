@@ -3,317 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bek's Tri Tracker · Sep 12</title>
+<title>Bek's Tri Tracker — Sept 12</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-:root{--bg:#13161f;--s1:#1e2235;--s2:#252a3d;--s3:#2c3248;--bd:rgba(255,255,255,0.11);--bd2:rgba(255,255,255,0.20);--text:#e8eaf0;--muted:#a0a8c0;--faint:#3a4060;--coral:#e8603a;--teal:#3ab8a0;--blue:#5b8dee;--amber:#e8b43a;--purple:#9b7fe8;--font:'Inter',sans-serif;--mono:'DM Mono',monospace;--r:10px;--rl:14px}
+:root {
+  --swim: #0e7490; --swim-bg: #ecfeff;
+  --bike: #1d4ed8; --bike-bg: #eff6ff;
+  --run:  #b45309; --run-bg:  #fffbeb;
+  --str:  #7c3aed; --str-bg:  #f5f3ff;
+  --brick:#be185d; --brick-bg:#fdf2f8;
+  --rest: #6b7280; --rest-bg: #f9fafb;
+  --race: #dc2626; --race-bg: #fef2f2;
+  --done: #16a34a;
+  --ink:  #1a1a1a;
+  --paper:#faf9f7;
+  --cream:#f3f0ea;
+  --border:#e2ddd5;
+  --muted:#78716c;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh}
-.shell{max-width:960px;margin:0 auto;padding:0 20px 80px}
-.topbar{padding:28px 0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--bd);margin-bottom:28px}
-.topbar-left h1{font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.2px}
-.topbar-left p{font-size:12px;color:var(--muted);margin-top:2px}
-.race-pill{font-family:var(--mono);font-size:11px;color:var(--coral);background:rgba(232,96,58,0.1);border:1px solid rgba(232,96,58,0.25);padding:5px 13px;border-radius:999px}
-.cd-row{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:22px 26px;margin-bottom:20px}
-.cd-digits{display:flex;align-items:flex-end;gap:3px}
+body{font-family:'DM Mono',monospace;background:var(--paper);color:var(--ink);min-height:100vh}
+
+header{background:var(--ink);color:#fff;padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 40px,rgba(255,255,255,.03) 40px,rgba(255,255,255,.03) 41px)}
+.header-inner{position:relative;max-width:900px;margin:0 auto}
+.race-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem}
+h1{font-family:'Fraunces',serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:700;line-height:1.1;margin-bottom:.75rem}
+h1 em{font-style:italic;font-weight:300}
+.header-meta{display:flex;gap:2rem;align-items:center;flex-wrap:wrap;font-size:11px;color:rgba(255,255,255,.6)}
+.header-meta strong{color:#fff}
+.header-tag{background:rgba(220,38,38,.25);color:#fca5a5;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px}
+
+.cd-bar{background:#111827;border-bottom:1px solid #374151;padding:1rem 2rem}
+.cd-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.cd-digits{display:flex;align-items:flex-end;gap:2px}
 .cd-unit{text-align:center}
-.cd-num{font-family:var(--mono);font-size:44px;font-weight:500;color:#fff;line-height:1;letter-spacing:-2px}
-.cd-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;display:block;margin-top:4px}
-.cd-sep{font-family:var(--mono);font-size:32px;color:var(--faint);padding-bottom:10px}
-.cd-phase{font-size:13px;color:var(--text);margin-bottom:8px}
-.cd-phase strong{color:var(--coral)}
-.prog-track{height:4px;background:var(--faint);border-radius:2px;overflow:hidden}
-.prog-fill{height:4px;background:var(--coral);border-radius:2px;transition:width 0.4s}
-.prog-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:5px}
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
-.sc{background:var(--s1);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
-.sc-top{font-size:11px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:5px}
-.sc-val{font-size:22px;font-weight:500;color:#fff;font-family:var(--mono);line-height:1.1}
-.sc-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.nav{display:flex;gap:2px;margin-bottom:24px;flex-wrap:wrap}
-.nav-btn{padding:7px 20px;border-radius:var(--r);font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);background:transparent;border:none;transition:all 0.15s}
-.nav-btn:hover{color:var(--text)}
-.nav-btn.active{background:var(--s1);color:#fff;border:1px solid var(--bd2)}
-.panel{display:none}.panel.active{display:block}
-.phase-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin:28px 0 12px;display:flex;align-items:center;gap:10px}
-.phase-label::after{content:'';flex:1;height:1px;background:var(--bd)}
-.phase-label:first-child{margin-top:0}
-.week{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);margin-bottom:8px;transition:border-color 0.15s}
-.week:hover{border-color:var(--bd2)}
-.week.done{border-color:rgba(58,184,160,0.3)}
-.week.current{border-color:rgba(232,96,58,0.35);box-shadow:0 0 0 1px rgba(232,96,58,0.08)}
-.week-top{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
-.wk-num{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:38px}
-.wk-dates{font-size:13px;font-weight:500;flex:1}
-.wk-phase{font-size:10px;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap}
-.ph-base{background:rgba(58,184,160,0.12);color:var(--teal)}
-.ph-build1{background:rgba(91,141,238,0.12);color:var(--blue)}
-.ph-build2{background:rgba(232,96,58,0.12);color:var(--coral)}
-.ph-peak{background:rgba(232,180,58,0.12);color:var(--amber)}
-.ph-taper{background:rgba(155,127,232,0.12);color:var(--purple)}
-.wk-tick{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--faint);display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;flex-shrink:0;transition:all 0.2s}
-.wk-tick.done{background:var(--teal);border-color:var(--teal);color:#0f1117}
-.wk-arrow{font-size:11px;color:var(--faint);transition:transform 0.2s;flex-shrink:0}
-.wk-arrow.open{transform:rotate(180deg)}
-.week-body{display:none;padding:0 16px 14px;border-top:1px solid var(--bd)}
-.week-body.open{display:block}
-.sessions{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0 10px}
-.sess{background:var(--s2);border-radius:8px;padding:8px 10px;display:flex;gap:8px;cursor:pointer;transition:opacity 0.15s;align-items:flex-start}
-.sess.done{opacity:0.4}
-.sess-cb{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--faint);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.15s}
-.sess-cb.done{background:var(--teal);border-color:var(--teal);color:#0f1117}
-.sess-info .sl{font-size:12px;font-weight:500;color:var(--text)}
-.sess-info .ss{font-size:11px;color:var(--muted);margin-top:1px}
-.sport-dot{width:6px;height:6px;border-radius:50%;margin-top:6px;flex-shrink:0}
-.week-note{font-size:12px;color:var(--muted);background:rgba(255,255,255,0.025);border-radius:7px;padding:8px 11px;line-height:1.55}
-.log-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
-.log-table{width:100%;border-collapse:collapse}
-.log-table th{font-size:11px;font-weight:500;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--bd);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
-.log-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--bd);vertical-align:middle}
-.log-table tr:last-child td{border-bottom:none}
-.log-table tr:hover td{background:rgba(255,255,255,0.015)}
-.pill{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap}
-.pill-run{background:rgba(58,184,160,0.12);color:var(--teal)}
-.pill-ride{background:rgba(91,141,238,0.12);color:var(--blue)}
-.pill-swim{background:rgba(232,96,58,0.12);color:var(--coral)}
-.pill-walk{background:rgba(122,128,153,0.1);color:var(--muted)}
-.pill-strength{background:rgba(232,180,58,0.12);color:var(--amber)}
-.pill-brick{background:rgba(155,127,232,0.12);color:var(--purple)}
-.mono{font-family:var(--mono);font-size:12px}
-.hr-high{color:var(--coral)}.hr-mid{color:var(--amber)}.hr-low{color:var(--teal)}
-.str-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:24px}
-.str-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px}
-.str-card h3{font-size:13px;font-weight:500;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
-.ex-list{list-style:none}
-.ex-list li{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--text);gap:8px}
-.ex-list li:last-child{border-bottom:none}
-.ex-sets{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
-.str-log{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);overflow:hidden}
-.str-log-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;padding:12px 16px;border-bottom:1px solid var(--bd)}
-.str-row{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
-.str-row:last-child{border-bottom:none}
-.str-date{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:90px}
-.str-focus{flex:1}
-.str-focus .sf-type{font-weight:500}
-.str-focus .sf-sub{font-size:11px;color:var(--muted)}
-.str-cb{width:22px;height:22px;border-radius:5px;border:1.5px solid var(--faint);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all 0.15s;flex-shrink:0}
-.str-cb.done{background:var(--amber);border-color:var(--amber);color:#0f1117;font-weight:600}
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.chart-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--rl);padding:18px 20px}
-.chart-card.full{grid-column:1/-1}
-.chart-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
-.ins-list{display:flex;flex-direction:column;gap:8px}
-.ins{background:var(--s1);border:1px solid var(--bd);border-left-width:3px;border-radius:var(--rl);padding:13px 15px;display:flex;gap:12px}
-.ins.good{border-left-color:var(--teal)}.ins.warn{border-left-color:var(--amber)}.ins.alert{border-left-color:var(--coral)}
-.ins-body .ins-title{font-size:13px;font-weight:500;margin-bottom:2px}
-.ins-body .ins-text{font-size:12px;color:var(--muted);line-height:1.55}
-.ins-icon{font-size:15px;flex-shrink:0;margin-top:1px}
-@media(max-width:640px){.summary{grid-template-columns:repeat(2,1fr)}.cd-row{grid-template-columns:1fr;gap:16px}.cd-num{font-size:34px}.sessions{grid-template-columns:repeat(2,1fr)}.chart-grid{grid-template-columns:1fr}.chart-card.full{grid-column:auto}.str-grid{grid-template-columns:1fr}}
+.cd-num{font-size:28px;font-weight:500;color:#fff;line-height:1;letter-spacing:-1px}
+.cd-lbl{font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;display:block;margin-top:2px}
+.cd-colon{font-size:22px;color:#374151;padding-bottom:8px}
+.cd-phase-text{font-size:11px;color:rgba(255,255,255,.5)}
+.cd-phase-text strong{color:#fff}
+
+.progress-section{background:var(--cream);border-bottom:1px solid var(--border);padding:1.25rem 2rem}
+.progress-inner{max-width:900px;margin:0 auto}
+.progress-stats{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:.75rem;font-size:11px;color:var(--muted)}
+.progress-stats span strong{color:var(--ink);font-size:18px;display:block;line-height:1.2}
+.progress-bar-wrap{background:#ddd9d0;border-radius:2px;height:6px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#0e7490,#1d4ed8,#b45309);transition:width .6s ease}
+.disc-bars{display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap}
+.disc-bar{display:flex;align-items:center;gap:.5rem;font-size:10px}
+.disc-bar-track{width:80px;height:4px;background:#ddd9d0;border-radius:2px;overflow:hidden}
+.disc-bar-fill{height:100%;border-radius:2px;transition:width .4s ease}
+
+.phase-nav{background:#fff;border-bottom:1px solid var(--border);padding:0 2rem;overflow-x:auto}
+.phase-nav-inner{max-width:900px;margin:0 auto;display:flex}
+.phase-btn{background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;padding:.75rem 1.25rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap}
+.phase-btn.active{color:var(--ink);border-bottom-color:var(--ink)}
+.phase-btn:hover:not(.active){color:var(--ink)}
+
+main{max-width:900px;margin:0 auto;padding:1.5rem 2rem 4rem}
+.phase-note{background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:1.5rem}
+.phase-note strong{color:var(--ink)}
+
+.week{margin-bottom:1rem;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.week-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:#fff;cursor:pointer;transition:background .1s}
+.week-header:hover{background:var(--cream)}
+.week-label{font-size:12px;font-weight:500;letter-spacing:.05em}
+.week-dates{font-size:10px;color:var(--muted)}
+.week-progress{display:flex;align-items:center;gap:.75rem}
+.week-pips{display:flex;gap:3px}
+.pip{width:8px;height:8px;border-radius:50%;border:1.5px solid var(--border);background:#fff;transition:all .15s}
+.pip.done{background:var(--done);border-color:var(--done)}
+.pip.rest{background:var(--border);border-color:var(--border)}
+.week-pct{font-size:10px;color:var(--muted);min-width:28px;text-align:right}
+.week-chevron{font-size:10px;color:var(--muted);transition:transform .2s}
+.week-chevron.open{transform:rotate(180deg)}
+.week-complete .week-header{background:#f0fdf4}
+
+.week-days{display:none;border-top:1px solid var(--border)}
+.week-days.open{display:block}
+.day-row{display:flex;align-items:flex-start;gap:.75rem;padding:.875rem 1rem;border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer}
+.day-row:last-child{border-bottom:none}
+.day-row.completed{background:#fafffe}
+.day-row.rest-day{opacity:.6;cursor:default}
+
+.day-check{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border);background:#fff;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:11px}
+.day-check:hover{border-color:var(--done)}
+.day-check.checked{background:var(--done);border-color:var(--done);color:#fff}
+.day-check.rest-check{cursor:default;background:var(--rest-bg)}
+
+.day-info{flex:1;min-width:0}
+.day-name-label{font-size:10px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.day-title{font-size:13px;font-weight:500;line-height:1.3}
+.day-detail{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+.disc-badge{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;font-weight:500;flex-shrink:0;margin-top:3px}
+.badge-swim{background:var(--swim-bg);color:var(--swim)}
+.badge-bike{background:var(--bike-bg);color:var(--bike)}
+.badge-run{background:var(--run-bg);color:var(--run)}
+.badge-str{background:var(--str-bg);color:var(--str)}
+.badge-brick{background:var(--brick-bg);color:var(--brick)}
+.badge-rest{background:var(--rest-bg);color:var(--rest)}
+.badge-race{background:var(--race-bg);color:var(--race)}
+
+.race-day-card{background:var(--ink);color:#fff;border-radius:8px;padding:2rem;text-align:center;margin:1.5rem 0}
+.race-day-card h2{font-family:'Fraunces',serif;font-size:1.5rem;margin-bottom:.5rem}
+.race-day-card p{font-size:12px;color:rgba(255,255,255,.6)}
+
+/* strength tab */
+.str-card{border:1px solid var(--border);border-radius:6px;margin-bottom:.75rem;overflow:hidden}
+.str-card-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:#fff;cursor:pointer}
+.str-card-hdr:hover{background:var(--cream)}
+.str-body{display:none;border-top:1px solid var(--border)}
+.str-body.open{display:block}
+.str-session-hdr{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;background:var(--cream);border-bottom:1px solid var(--border)}
+.str-session-title{font-size:12px;font-weight:500}
+.str-session-sub{font-size:10px;color:var(--muted)}
+.str-ex-row{display:grid;grid-template-columns:2fr 1fr 2fr;gap:8px;padding:.6rem 1rem .6rem 2.75rem;border-bottom:1px solid var(--border);align-items:start}
+.str-ex-row:last-child{border-bottom:none}
+.str-ex-name{font-size:12px;font-weight:500}
+.str-ex-note{font-size:10px;color:var(--muted);margin-top:1px}
+.str-sets{font-size:11px;color:var(--muted)}
+.str-cue{font-size:11px;color:var(--muted);line-height:1.5}
+.str-badge{font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:3px;font-weight:500;display:inline-block;margin-top:2px}
+.str-lower{background:#eff6ff;color:#1d4ed8}
+.str-upper{background:#f5f3ff;color:#7c3aed}
+.str-core{background:#f0fdf4;color:#16a34a}
+.str-complete .str-card-hdr{background:#f0fdf4}
+
+/* past phase weeks are greyed */
+.week.past .week-header{opacity:.7}
+
+@media(max-width:600px){
+  header,.progress-section,.phase-nav,main{padding-left:1rem;padding-right:1rem}
+  .progress-stats{gap:1rem}
+  .str-ex-row{grid-template-columns:1fr 1fr}
+  .str-cue{display:none}
+}
 </style>
 </head>
 <body>
-<div class="shell">
 
-<div class="topbar">
-  <div class="topbar-left">
-    <h1>Bek's Triathlon Tracker</h1>
-    <p>Reeds Lake Sprint · 12-week plan · starts Jun 22</p>
+<header>
+  <div class="header-inner">
+    <div class="race-label">Sprint Triathlon — Bek</div>
+    <h1>12 Weeks to <em>race day</em></h1>
+    <div class="header-meta">
+      <span><strong>Sept 12, 2026</strong> race date</span>
+      <span><strong>750m</strong> swim</span>
+      <span><strong>20km</strong> bike</span>
+      <span><strong>5km</strong> run</span>
+      <span><strong>5 days/wk</strong></span>
+      <span class="header-tag">base done ✓</span>
+    </div>
   </div>
-  <div class="race-pill">🏁 Sep 12, 2026</div>
-</div>
+</header>
 
-<div class="cd-row">
-  <div class="cd-digits">
-    <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><span class="cd-lbl">days</span></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><span class="cd-lbl">hrs</span></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><span class="cd-lbl">min</span></div>
-    <div class="cd-sep">:</div>
-    <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><span class="cd-lbl">sec</span></div>
-  </div>
-  <div>
-    <div class="cd-phase">Phase: <strong id="phase-name">—</strong> &nbsp;·&nbsp; <span id="week-name" style="color:var(--muted);font-size:12px"></span></div>
-    <div class="prog-track" style="margin-top:10px"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-    <div class="prog-labels"><span>Jun 22</span><span id="prog-pct">0%</span><span>Sep 12</span></div>
-  </div>
-</div>
-
-<div class="summary">
-  <div class="sc"><div class="sc-top"><span class="dot" style="background:var(--teal)"></span>Weeks done</div><div class="sc-val" id="st-wk">0/12</div><div class="sc-sub">of 12 total</div></div>
-  <div class="sc"><div class="sc-top"><span class="dot" style="background:var(--blue)"></span>Sessions logged</div><div class="sc-val" id="st-sess">0</div><div class="sc-sub">workouts checked off</div></div>
-  <div class="sc"><div class="sc-top"><span class="dot" style="background:var(--coral)"></span>Last run</div><div class="sc-val">6.4 km</div><div class="sc-sub">Jun 19 · 6:16/km</div></div>
-  <div class="sc"><div class="sc-top"><span class="dot" style="background:var(--amber)"></span>Strength</div><div class="sc-val" id="st-str">0</div><div class="sc-sub">sessions done</div></div>
-</div>
-
-<div class="nav">
-  <button class="nav-btn active" onclick="showPanel('plan',this)">Training Plan</button>
-  <button class="nav-btn" onclick="showPanel('log',this)">Workout Log</button>
-  <button class="nav-btn" onclick="showPanel('strength',this)">Strength</button>
-  <button class="nav-btn" onclick="showPanel('charts',this)">Charts</button>
-  <button class="nav-btn" onclick="showPanel('insights',this)">Insights</button>
-</div>
-
-<!-- PLAN -->
-<div class="panel active" id="panel-plan"><div id="plan-container"></div></div>
-
-<!-- LOG -->
-<div class="panel" id="panel-log">
-  <div class="log-wrap">
-    <table class="log-table">
-      <thead><tr><th>Date</th><th>Activity</th><th>Type</th><th>Distance</th><th>Time</th><th>Avg HR</th><th>Notes</th></tr></thead>
-      <tbody id="log-body"></tbody>
-    </table>
+<div class="cd-bar">
+  <div class="cd-inner">
+    <div class="cd-digits">
+      <div class="cd-unit"><div class="cd-num" id="cd-d">--</div><span class="cd-lbl">days</span></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-h">--</div><span class="cd-lbl">hrs</span></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-m">--</div><span class="cd-lbl">min</span></div>
+      <div class="cd-colon">:</div>
+      <div class="cd-unit"><div class="cd-num" id="cd-s">--</div><span class="cd-lbl">sec</span></div>
+    </div>
+    <div class="cd-phase-text">Now in: <strong id="cd-phase">—</strong> &nbsp;·&nbsp; <span id="cd-week"></span></div>
   </div>
 </div>
 
-<!-- STRENGTH -->
-<div class="panel" id="panel-strength">
-  <div style="margin-bottom:20px;font-size:13px;color:var(--muted);line-height:1.6">2× per week. Focus on hip stability, glutes, and single-leg work to support the run. Keep it 30–40 min.</div>
-  <div class="str-grid">
-    <div class="str-card">
-      <h3 style="color:var(--teal)">Session A — Lower + core</h3>
-      <ul class="ex-list">
-        <li>Goblet squat<span class="ex-sets">3 × 12</span></li>
-        <li>Single-leg Romanian deadlift<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Hip thrust<span class="ex-sets">3 × 15</span></li>
-        <li>Lateral band walk<span class="ex-sets">2 × 20 steps</span></li>
-        <li>Dead bug<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Single-leg calf raise<span class="ex-sets">3 × 15</span></li>
-      </ul>
+<div class="progress-section">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <span><strong id="stat-done">0</strong>workouts done</span>
+      <span><strong id="stat-total">0</strong>total workouts</span>
+      <span><strong id="stat-pct">0%</strong>complete</span>
+      <span><strong id="stat-weeks">0</strong>weeks finished</span>
     </div>
-    <div class="str-card">
-      <h3 style="color:var(--blue)">Session B — Upper + rotational</h3>
-      <ul class="ex-list">
-        <li>Dumbbell row<span class="ex-sets">3 × 12 ea</span></li>
-        <li>Push-up or DB press<span class="ex-sets">3 × 10</span></li>
-        <li>Pallof press<span class="ex-sets">3 × 12 ea</span></li>
-        <li>Step-up with knee drive<span class="ex-sets">3 × 10 ea</span></li>
-        <li>Band pull-apart<span class="ex-sets">3 × 15</span></li>
-        <li>Plank hold<span class="ex-sets">3 × 30–45 sec</span></li>
-      </ul>
-    </div>
-    <div class="str-card">
-      <h3 style="color:var(--coral)">Swim dryland add-on</h3>
-      <ul class="ex-list">
-        <li>Lat pulldown or pull-up<span class="ex-sets">3 × 10</span></li>
-        <li>Dumbbell pull-over<span class="ex-sets">3 × 12</span></li>
-        <li>Shoulder external rotation<span class="ex-sets">2 × 15</span></li>
-        <li>Face pull<span class="ex-sets">3 × 15</span></li>
-        <li>Streamline hollow hold<span class="ex-sets">3 × 20 sec</span></li>
-      </ul>
-    </div>
-    <div class="str-card">
-      <h3 style="color:var(--muted)">Rules</h3>
-      <ul class="ex-list">
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Moderate weights — not powerlifting prep</li>
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Never the day before a long run or brick</li>
-        <li style="display:block;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px;color:var(--muted)">Drop to 1×/week in taper (weeks 11–12)</li>
-        <li style="display:block;padding:5px 0;font-size:12px;color:var(--muted)">Alternate A → B each session</li>
-      </ul>
-    </div>
-  </div>
-  <div class="str-log">
-    <div class="str-log-title">Session log — 2× per week</div>
-    <div id="str-log-body"></div>
-  </div>
-</div>
-
-<!-- CHARTS -->
-<div class="panel" id="panel-charts">
-  <div class="chart-grid">
-    <div class="chart-card full">
-      <div class="chart-title">Monthly bike sessions — 2024 to present</div>
-      <div style="position:relative;height:200px"><canvas id="c-bike" role="img" aria-label="Monthly bike sessions 2024 to 2026">Peaking at 35 in March 2026.</canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Run distance progression</div>
-      <div style="position:relative;height:180px"><canvas id="c-run" role="img" aria-label="Run distances growing from 3.1 to 6.4 km">3.1 km in April 2025 to 6.4 km in June 2026.</canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Swim distances</div>
-      <div style="position:relative;height:180px"><canvas id="c-swim" role="img" aria-label="Swim distances from 370 to 1150m">370m in Feb 2025 to 1150m in June 2026.</canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Bike HR distribution</div>
-      <div style="position:relative;height:180px"><canvas id="c-hr" role="img" aria-label="Bike HR mostly 140-170 bpm">Most rides at 150-160 bpm.</canvas></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-title">Run HR — recent activities</div>
-      <div style="position:relative;height:180px"><canvas id="c-runhr" role="img" aria-label="Run HR 117 to 178 bpm">Trending toward 150-157 bpm.</canvas></div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="main-bar" style="width:0%"></div></div>
+    <div class="disc-bars">
+      <div class="disc-bar"><span>🏊</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-swim" style="width:0%;background:var(--swim)"></div></div><span id="lbl-swim">0%</span></div>
+      <div class="disc-bar"><span>🚴</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-bike" style="width:0%;background:var(--bike)"></div></div><span id="lbl-bike">0%</span></div>
+      <div class="disc-bar"><span>🏃</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-run" style="width:0%;background:var(--run)"></div></div><span id="lbl-run">0%</span></div>
+      <div class="disc-bar"><span>💪</span><div class="disc-bar-track"><div class="disc-bar-fill" id="bar-str" style="width:0%;background:var(--str)"></div></div><span id="lbl-str">0%</span></div>
     </div>
   </div>
 </div>
 
-<!-- INSIGHTS -->
-<div class="panel" id="panel-insights">
-  <div class="ins-list">
-    <div class="ins good"><span class="ins-icon">📈</span><div class="ins-body"><div class="ins-title">Run base is forming fast</div><div class="ins-text">Three runs Jun 17–19, pace locked at 6:10–6:15/km across all distances. Longest run 6.4 km — well ahead of where she needs to be at race start.</div></div></div>
-    <div class="ins good"><span class="ins-icon">🏊</span><div class="ins-body"><div class="ins-title">Swim HR is perfectly controlled</div><div class="ins-text">Jun 12: 76% easy/zone 2, avg 119 bpm. Jun 16: avg 129, started high and settled fast. The zone 2 HR spike problem on the run doesn't exist in the water.</div></div></div>
-    <div class="ins good"><span class="ins-icon">🚴</span><div class="ins-body"><div class="ins-title">First true zone 2 ride logged</div><div class="ins-text">Jun 18 indoor ride: 85% zone 2, avg HR 129, max 141. Previous data showed almost all rides at 147+ avg. Replicate this weekly alongside harder efforts.</div></div></div>
-    <div class="ins warn"><span class="ins-icon">⚠️</span><div class="ins-body"><div class="ins-title">Three runs back-to-back is aggressive</div><div class="ins-text">Jun 17–19: three consecutive run days. Watch for shin or calf tightness. One rest day between runs is safer until week 6+.</div></div></div>
-    <div class="ins warn"><span class="ins-icon">💓</span><div class="ins-body"><div class="ins-title">Run HR elevated — but don't fight it</div><div class="ins-text">Avg 149–157 across recent runs. HR is stable, effort is conversational, pace is consistent. This is her effective easy pace for now. Will come down with base building.</div></div></div>
-    <div class="ins alert"><span class="ins-icon">🎯</span><div class="ins-body"><div class="ins-title">Swim 2× per week is the #1 priority</div><div class="ins-text">Only 12 weeks to race day now. Two swims per week every week through week 10 is non-negotiable. Missing swim weeks hurts more than missing run or bike weeks.</div></div></div>
-    <div class="ins good"><span class="ins-icon">🚶</span><div class="ins-body"><div class="ins-title">Walking base is a hidden asset</div><div class="ins-text">843 walks, 25–36 km/week recently. Meaningful aerobic volume and joint conditioning. It's why running feels accessible despite minimal run history.</div></div></div>
+<div class="phase-nav">
+  <div class="phase-nav-inner">
+    <button class="phase-btn active" onclick="showPhase(0)">Base (done ✓)</button>
+    <button class="phase-btn" onclick="showPhase(1)">Build 1</button>
+    <button class="phase-btn" onclick="showPhase(2)">Build 2</button>
+    <button class="phase-btn" onclick="showPhase(3)">Peak + Taper</button>
+    <button class="phase-btn" onclick="showStrength()">Strength Log</button>
   </div>
 </div>
 
-</div>
+<main id="main-content"></main>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-const RACE  = new Date('2026-09-12T07:00:00');
-const START = new Date('2026-06-22');
-const LSKEY = 'bek_tri_v4';
+const RACE   = new Date('2026-09-12T07:00:00');
+const PLAN_START = new Date('2026-05-25'); // base phase started ~May 25
+const BUILD_START = new Date('2026-06-22');
+const LSKEY  = 'bek_tri_v5';
 
-const weeks = [
-  {n:1, d:'Jun 22 – Jun 28', ph:'base',   pl:'Base',    note:'Get comfortable in the water. Walk/run only — no pressure on pace.',
-   s:[{sp:'swim',l:'Swim drills',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'20 min'},{sp:'bike',l:'Easy ride',sub:'45 min'},{sp:'swim',l:'Easy swim',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Longer ride',sub:'60 min'}]},
-  {n:2, d:'Jun 29 – Jul 5',  ph:'base',   pl:'Base',    note:'Try to swim farther each session. Try your first 100m continuous swim.',
-   s:[{sp:'swim',l:'Swim + 100m try',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Easy ride',sub:'50 min'},{sp:'swim',l:'Easy swim',sub:'30 min'},{sp:'run',l:'Walk/run',sub:'30 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
-  {n:3, d:'Jul 6 – Jul 12',  ph:'base',   pl:'Base',    note:'Recovery week — pull back slightly. Let the body absorb weeks 1 and 2.',
-   s:[{sp:'swim',l:'Easy swim',sub:'25 min'},{sp:'run',l:'Easy run',sub:'20 min'},{sp:'bike',l:'Easy spin',sub:'45 min'},{sp:'swim',l:'Technique',sub:'25 min'},{sp:'run',l:'Walk/run',sub:'25 min'},{sp:'bike',l:'Moderate ride',sub:'55 min'}]},
-  {n:4, d:'Jul 13 – Jul 19', ph:'build1', pl:'Build 1', note:'First brick workout this week. Start running more than walking.',
-   s:[{sp:'swim',l:'Swim sets',sub:'400m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Tempo ride',sub:'50 min'},{sp:'swim',l:'Open water',sub:'30 min if possible'},{sp:'brick',l:'First brick!',sub:'45 min bike + 10 min run'},{sp:'run',l:'Longer run',sub:'30 min'}]},
-  {n:5, d:'Jul 20 – Jul 26', ph:'build1', pl:'Build 1', note:'Push swim to 500m continuous goal. Bricks get a little longer.',
-   s:[{sp:'swim',l:'500m attempt',sub:'No stops'},{sp:'run',l:'Easy run',sub:'30 min'},{sp:'bike',l:'Interval ride',sub:'55 min'},{sp:'swim',l:'Open water',sub:'400m'},{sp:'brick',l:'Brick',sub:'55 min bike + 12 min run'},{sp:'run',l:'Longer run',sub:'35 min'}]},
-  {n:6, d:'Jul 27 – Aug 2',  ph:'build1', pl:'Build 1', note:'Recovery week — pull back 20%. Your body is adapting, let it.',
-   s:[{sp:'swim',l:'Easy swim',sub:'300m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Easy ride',sub:'45 min'},{sp:'swim',l:'Technique',sub:'25 min'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Moderate ride',sub:'60 min'}]},
-  {n:7, d:'Aug 3 – Aug 9',   ph:'build2', pl:'Build 2', note:'Race-specific training begins. Open water every swim if possible.',
-   s:[{sp:'swim',l:'Open water',sub:'600m, sighting'},{sp:'run',l:'Tempo run',sub:'30 min'},{sp:'brick',l:'Brick',sub:'70 min bike + 18 min run'},{sp:'swim',l:'Pool sets',sub:'600m'},{sp:'bike',l:'Race-pace ride',sub:'75 min'},{sp:'run',l:'Longer run',sub:'40 min'}]},
-  {n:8, d:'Aug 10 – Aug 16', ph:'build2', pl:'Build 2', note:'Practice transitions at home. Time yourself: helmet on, shoes clipped, laces.',
-   s:[{sp:'swim',l:'Open water',sub:'650m'},{sp:'run',l:'Tempo run',sub:'35 min'},{sp:'brick',l:'Brick',sub:'75 min bike + 20 min run'},{sp:'swim',l:'Pool sets',sub:'650m'},{sp:'bike',l:'Race-pace ride',sub:'80 min'},{sp:'run',l:'Longer run',sub:'45 min'}]},
-  {n:9, d:'Aug 17 – Aug 23', ph:'build2', pl:'Build 2', note:'Mock triathlon this week — swim → bike → run at race effort, shorter distances.',
-   s:[{sp:'swim',l:'Open water',sub:'700m'},{sp:'run',l:'Easy run',sub:'30 min'},{sp:'swim',l:'Mock tri swim',sub:'Race distance'},{sp:'brick',l:'Mock triathlon',sub:'Full swim-bike-run'},{sp:'bike',l:'Easy spin recovery',sub:'30 min'},{sp:'run',l:'Short run',sub:'20 min easy'}]},
-  {n:10,d:'Aug 24 – Aug 30', ph:'peak',   pl:'Peak',    note:'Highest volume week. Race-distance rehearsal. You have got this.',
-   s:[{sp:'swim',l:'Open water race dist',sub:'Full distance'},{sp:'run',l:'Tempo run',sub:'40 min'},{sp:'brick',l:'Long brick',sub:'Race dist + 25 min run'},{sp:'swim',l:'Pool sets',sub:'800m'},{sp:'bike',l:'Race-pace ride',sub:'Full distance'},{sp:'run',l:'Longest run',sub:'50 min'}]},
-  {n:11,d:'Aug 31 – Sep 6',  ph:'taper',  pl:'Taper',   note:'Cut volume 40%. Keep some intensity. Taper madness is real — do not add workouts.',
-   s:[{sp:'swim',l:'Easy swim',sub:'400m'},{sp:'run',l:'Easy run',sub:'25 min'},{sp:'bike',l:'Short tempo',sub:'40 min'},{sp:'swim',l:'Easy swim',sub:'300m'},{sp:'run',l:'Short run',sub:'20 min'},{sp:'bike',l:'Easy spin',sub:'30 min'}]},
-  {n:12,d:'Sep 7 – Sep 12',  ph:'taper',  pl:'Race Week',note:'Mon–Wed: short easy sessions only. Thu: full rest + gear check. Fri: 15 min shake-out swim. Sat: rest. Sun: RACE!',
-   s:[{sp:'swim',l:'Easy swim',sub:'20 min Mon'},{sp:'run',l:'Short run',sub:'20 min Tue'},{sp:'bike',l:'Easy spin',sub:'30 min Wed'},{sp:'swim',l:'Shake-out',sub:'15 min Fri'},{sp:'run',l:'Gear check',sub:'Thu — full rest'},{sp:'race',l:'RACE DAY',sub:'Sep 12 — go!'}]},
+const WEEKS = [
+  // ── PHASE 0: BASE (already done) ─────────────────────────────────────────
+  {num:1, dates:'May 25 – May 31', phase:0,
+   note:'Week 1 — getting comfortable in the water. Walk/run only on the run.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'First swim', detail:'20–25 min easy. Just get in the water. Drills or freestyle, no pressure.'},
+    {disc:'run',  day:'Tue', title:'Walk/run', detail:'20 min. Walk/run intervals. Flat terrain. Easy effort.'},
+    {disc:'bike', day:'Wed', title:'Easy ride', detail:'45 min easy, conversational pace.'},
+    {disc:'swim', day:'Fri', title:'Easy swim', detail:'25 min. Try to go a bit farther than Monday.'},
+    {disc:'run',  day:'Sat', title:'Walk/run', detail:'25 min. Same effort as Tuesday.'},
+    {disc:'bike', day:'Sun', title:'Longer ride', detail:'60 min easy. Keep it steady.'},
+  ]},
+  {num:2, dates:'Jun 1 – Jun 7', phase:0,
+   note:'Week 2 — try first continuous 100m swim. Runs getting a little longer.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Swim + 100m try', detail:'30 min. Drills then attempt 100m continuous. If not yet, keep building.'},
+    {disc:'run',  day:'Tue', title:'Walk/run', detail:'25 min. A little less walking this week.'},
+    {disc:'bike', day:'Wed', title:'Easy ride', detail:'50 min. Relaxed effort.'},
+    {disc:'swim', day:'Fri', title:'Easy swim', detail:'30 min. Aim for two 100m continuous efforts.'},
+    {disc:'run',  day:'Sat', title:'Walk/run', detail:'30 min. Walk only if needed.'},
+    {disc:'bike', day:'Sun', title:'Longer ride', detail:'65 min easy.'},
+  ]},
+  {num:3, dates:'Jun 8 – Jun 14', phase:0,
+   note:'Week 3 — first brick workout. Running is starting to feel like running.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Swim sets', detail:'400m total. Try a 200m continuous stretch.'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'25 min. More running than walking now.'},
+    {disc:'bike', day:'Wed', title:'Tempo ride', detail:'50 min. Include one 10 min moderate effort section.'},
+    {disc:'swim', day:'Fri', title:'Open water or pool', detail:'30 min. If open water is available, go there.'},
+    {disc:'brick',day:'Sat', title:'First brick', detail:'45 min bike immediately into 10 min run. Notice the jelly legs — that feeling goes away.'},
+    {disc:'run',  day:'Sun', title:'Easy run', detail:'25 min easy. Recovery effort only.'},
+  ]},
+  {num:4, dates:'Jun 15 – Jun 21', phase:0,
+   note:'Week 4 — light recovery week before the build phase starts. Good work getting here.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Easy swim', detail:'25 min. Technique focus, no intensity.'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'20 min easy. Let the body absorb the last 3 weeks.'},
+    {disc:'bike', day:'Wed', title:'Easy spin', detail:'45 min. Genuinely easy — recovery ride.'},
+    {disc:'swim', day:'Fri', title:'Technique swim', detail:'25 min. Focus on breathing rhythm and hand entry.'},
+    {disc:'run',  day:'Sat', title:'Easy run', detail:'25 min easy.'},
+    {disc:'bike', day:'Sun', title:'Moderate ride', detail:'55 min. Keep it easy but feel free to ride comfortably.'},
+  ]},
+
+  // ── PHASE 1: BUILD 1 ──────────────────────────────────────────────────────
+  {num:5, dates:'Jun 22 – Jun 28', phase:1,
+   note:'Build 1 starts. Brick workouts get longer. Swim pushing toward 500m continuous.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Swim sets', detail:'500m total. Warm up 100m, then 3×100m with 30s rest, cool down 100m. Aim to feel the pace difference.'},
+    {disc:'str',  day:'Mon', title:'Strength A', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Lateral band walk 2×20 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'25 min easy. Zone 2. Conversational — if you can\'t hold a sentence, slow down.'},
+    {disc:'bike', day:'Wed', title:'Tempo ride', detail:'55 min. Warm up 15 min, 2×10 min moderate-hard effort, 5 min easy between, cool down.'},
+    {disc:'swim', day:'Thu', title:'Open water', detail:'500m if possible. Practice sighting every 8–10 strokes. If pool only, 500m easy continuous.'},
+    {disc:'str',  day:'Thu', title:'Strength B', detail:'DB row 3×12 ea · Push-up or DB press 3×10 · Pallof press 3×12 ea · Step-up with knee drive 3×10 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'brick',day:'Sat', title:'Brick', detail:'55 min bike + 12 min run. Focus on quick transition — helmet off, shoes on, go.'},
+    {disc:'run',  day:'Sun', title:'Longer run', detail:'30 min easy. This is where the run base gets built — stay easy.'},
+  ]},
+  {num:6, dates:'Jun 29 – Jul 5', phase:1,
+   note:'Week 6 — 500m swim goal this week. Brick run getting longer.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'500m continuous attempt', detail:'Warm up 100m easy, then attempt 500m without stopping. If you need to break it, do 2×250m. Keep pace very comfortable.'},
+    {disc:'str',  day:'Mon', title:'Strength A', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Lateral band walk 2×20 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'28 min easy. Same effort as last week — building duration not intensity.'},
+    {disc:'bike', day:'Wed', title:'Interval ride', detail:'60 min. Warm up 15 min, 3×8 min harder effort with 4 min easy between, cool down.'},
+    {disc:'swim', day:'Thu', title:'Endurance swim', detail:'600m. Easy effort throughout. You\'re already at race distance — now it\'s about comfort.'},
+    {disc:'str',  day:'Thu', title:'Strength B', detail:'DB row 3×12 ea · Push-up or DB press 3×10 · Pallof press 3×12 ea · Step-up with knee drive 3×10 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'brick',day:'Sat', title:'Brick', detail:'60 min bike + 15 min run. Jelly legs should be noticeably less than week 3.'},
+    {disc:'run',  day:'Sun', title:'Longer run', detail:'33 min easy.'},
+  ]},
+  {num:7, dates:'Jul 6 – Jul 12', phase:1,
+   note:'Recovery week — pull back 20%. Let the adaptations settle before Build 2.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Easy swim', detail:'400m easy. No sets. Technique focus.'},
+    {disc:'str',  day:'Mon', title:'Strength A (light)', detail:'Reduce weight ~10%. Goblet squat 2×12 · Hip thrust 2×15 · Dead bug 2×10 · Calf raise 2×15'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'22 min easy. Recovery week — go slower than feels right.'},
+    {disc:'bike', day:'Wed', title:'Easy ride', detail:'45 min. No efforts. Recovery ride only.'},
+    {disc:'swim', day:'Thu', title:'Technique swim', detail:'350m. Drill focus — breathing rhythm, hand entry, hip rotation.'},
+    {disc:'str',  day:'Thu', title:'Strength B (light)', detail:'DB row 2×12 · Push-up 2×10 · Plank 2×30s · Step-up 2×10'},
+    {disc:'bike', day:'Sat', title:'Moderate ride', detail:'55 min easy.'},
+    {disc:'run',  day:'Sun', title:'Short run', detail:'25 min easy.'},
+  ]},
+
+  // ── PHASE 2: BUILD 2 ──────────────────────────────────────────────────────
+  {num:8, dates:'Jul 13 – Jul 19', phase:2,
+   note:'Build 2 — race-specific prep. Open water every swim if possible. Transitions matter now.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Open water sighting', detail:'600m. Lift your head every 8–10 strokes to sight the buoy. This feels awkward at first — practice it now, not on race day.'},
+    {disc:'str',  day:'Mon', title:'Strength A', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Lateral band walk 2×20 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Tempo run', detail:'30 min. Warm up 10 min easy, 10 min at a comfortably hard pace (you can speak in short sentences), cool down 10 min.'},
+    {disc:'brick',day:'Wed', title:'Brick', detail:'70 min bike + 18 min run. The run should feel less weird every time.'},
+    {disc:'swim', day:'Thu', title:'Pool sets', detail:'600m total. Warm up 100m, 4×100m with 20s rest, cool down 100m.'},
+    {disc:'str',  day:'Thu', title:'Strength B', detail:'DB row 3×12 ea · Push-up or DB press 3×10 · Pallof press 3×12 ea · Step-up with knee drive 3×10 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', day:'Sat', title:'Race-pace ride', detail:'75 min. Last 30 min at race effort — practice pushing when tired.'},
+    {disc:'run',  day:'Sun', title:'Longer run', detail:'40 min easy.'},
+  ]},
+  {num:9, dates:'Jul 20 – Jul 26', phase:2,
+   note:'Week 9 — practice transitions at home. Time yourself. Every second in T1/T2 is free time.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Open water', detail:'650m. Practice getting in and starting without hesitation. Start at the back or edge to avoid the washing machine start.'},
+    {disc:'str',  day:'Mon', title:'Strength A', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Lateral band walk 2×20 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Tempo run', detail:'33 min. Warm up 10 min, 13 min tempo effort, cool down 10 min.'},
+    {disc:'brick',day:'Wed', title:'Brick', detail:'75 min bike + 20 min run. Practice a fast transition between them at home this week.'},
+    {disc:'swim', day:'Thu', title:'Pool sets', detail:'650m total. Warm up 100m, 3×150m with 25s rest, cool down 100m.'},
+    {disc:'str',  day:'Thu', title:'Strength B', detail:'DB row 3×12 ea · Push-up or DB press 3×10 · Pallof press 3×12 ea · Step-up with knee drive 3×10 · Band pull-apart 3×15 · Plank 3×30s'},
+    {disc:'bike', day:'Sat', title:'Race-pace ride', detail:'80 min. Includes 20 min at race effort.'},
+    {disc:'run',  day:'Sun', title:'Longer run', detail:'44 min easy.'},
+  ]},
+  {num:10, dates:'Jul 27 – Aug 2', phase:2,
+   note:'Mock triathlon this week — the full thing at slightly shorter distances. Race-day practice.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Open water', detail:'700m. You\'re past race distance — now it\'s comfort and confidence.'},
+    {disc:'str',  day:'Mon', title:'Strength A', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'30 min easy. Recovery before the mock tri.'},
+    {disc:'brick',day:'Thu', title:'Mock triathlon', detail:'600m swim → 15km bike → 3km run. Race effort throughout. Treat it like the real thing — layout your gear, practice transitions.'},
+    {disc:'bike', day:'Fri', title:'Easy spin recovery', detail:'30 min. Very easy. Flush out Thursday\'s effort.'},
+    {disc:'bike', day:'Sat', title:'Race-pace ride', detail:'85 min. Your longest ride. Feel what it\'s like to ride race distance and then some.'},
+    {disc:'run',  day:'Sun', title:'Longer run', detail:'45 min easy. Longest run in the plan.'},
+  ]},
+
+  // ── PHASE 3: PEAK + TAPER ─────────────────────────────────────────────────
+  {num:11, dates:'Aug 3 – Aug 9', phase:3,
+   note:'Peak week — highest volume. Race-distance everything. Then it\'s all downhill from here.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Race distance swim', detail:'750m continuous. This is it — race distance. Keep pace easy. If you can do this, you can do it on Sep 12.'},
+    {disc:'str',  day:'Mon', title:'Strength A (last heavy week)', detail:'Goblet squat 3×12 · Single-leg RDL 3×10 ea · Hip thrust 3×15 · Dead bug 3×10 · Calf raise 3×15'},
+    {disc:'run',  day:'Tue', title:'Tempo run', detail:'35 min. Warm up 10, 15 min tempo, cool down 10.'},
+    {disc:'brick',day:'Wed', title:'Long brick', detail:'Race bike distance + 25 min run. Your longest brick. You\'re ready.'},
+    {disc:'swim', day:'Thu', title:'Pool sets', detail:'800m. Warm up 150m, 5×100m with 20s rest, cool down 150m.'},
+    {disc:'bike', day:'Sat', title:'Race-pace ride', detail:'Full race distance at race effort.'},
+    {disc:'run',  day:'Sun', title:'Longest run', detail:'48 min easy. Last long run of the plan.'},
+  ]},
+  {num:12, dates:'Aug 10 – Aug 16', phase:3,
+   note:'Taper week 1 — cut volume 40%. Keep some intensity. Taper madness is real. Do not add workouts.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Easy swim', detail:'400m easy. No sets, no intensity. Just move.'},
+    {disc:'str',  day:'Mon', title:'Strength A (light)', detail:'One set each. Goblet squat 1×12 · Hip thrust 1×15 · Dead bug 1×10'},
+    {disc:'run',  day:'Tue', title:'Easy run', detail:'22 min easy. Resist going harder — your fitness is set.'},
+    {disc:'bike', day:'Wed', title:'Short tempo ride', detail:'40 min. Include one 8 min moderate effort to stay sharp.'},
+    {disc:'swim', day:'Thu', title:'Easy swim', detail:'300m. Light and easy.'},
+    {disc:'run',  day:'Fri', title:'Short run', detail:'18 min very easy.'},
+    {disc:'bike', day:'Sat', title:'Easy spin', detail:'30 min. Feel good, nothing more.'},
+  ]},
+  {num:13, dates:'Aug 17 – Aug 23', phase:3,
+   note:'Taper week 2 — almost there. Short sessions only. Body is storing energy. Trust it.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Easy swim', detail:'300m. Loose and easy.'},
+    {disc:'run',  day:'Tue', title:'Short run', detail:'18 min easy.'},
+    {disc:'bike', day:'Wed', title:'Easy spin', detail:'25 min. Just spin the legs.'},
+    {disc:'swim', day:'Thu', title:'Easy swim', detail:'200m. Confidence swim — you\'ve got this.'},
+    {disc:'run',  day:'Fri', title:'Short run', detail:'15 min very easy.'},
+  ]},
+  {num:14, dates:'Sep 7 – Sep 12', phase:3,
+   note:'Race week — short sessions Mon–Wed. Thu full rest + gear check. Fri shake-out swim. Sat rest. Sunday: race.',
+   sessions:[
+    {disc:'swim', day:'Mon', title:'Easy swim', detail:'200m. Shake out the arms. Nothing more.'},
+    {disc:'run',  day:'Tue', title:'Short run', detail:'15 min easy. Last run before race day.'},
+    {disc:'bike', day:'Wed', title:'Easy spin', detail:'20 min. Just keep the legs moving.'},
+    {disc:'rest', day:'Thu', title:'Full rest + gear check', detail:'Lay out everything: wetsuit, goggles, helmet, bike shoes, race shoes, race belt, nutrition. Check tire pressure. Go to bed early.'},
+    {disc:'swim', day:'Fri', title:'Shake-out swim', detail:'10–15 min. Easy. Just to feel the water before race day.'},
+    {disc:'rest', day:'Sat', title:'Rest day', detail:'Eat well, hydrate, sleep early. Nothing to prove today.'},
+    {disc:'race', day:'Sun', title:'RACE DAY — Sept 12', detail:'750m swim → 20km bike → 5km run. Seed yourself at the back or edge of your wave. Go out easy on the swim. Ride your race on the bike. The run will feel strange for the first minute — keep moving and it clears.'},
+  ]},
 ];
 
-const log = [
-  {date:'Jun 19',name:'Morning Run',   sp:'run',  dist:'6.4 km', time:'40:18',hr:'151',notes:'Longest run yet. 6:16/km pace.'},
-  {date:'Jun 18',name:'Night Run',     sp:'run',  dist:'2.0 km', time:'12:26',hr:'—',  notes:'2am. Same pace as longer runs.'},
-  {date:'Jun 18',name:'Zwift Loop',    sp:'ride', dist:'13.0 km',time:'33:08',hr:'—',  notes:'83W avg, 82 rpm cadence.'},
-  {date:'Jun 18',name:'Indoor Ride',   sp:'ride', dist:'—',      time:'33:13',hr:'129', notes:'85% zone 2. First true easy ride.'},
-  {date:'Jun 17',name:'Evening Run',   sp:'run',  dist:'4.9 km', time:'29:57',hr:'151', notes:'65% Z3, 35% Z4. Stable HR.'},
-  {date:'Jun 16',name:'Morning Swim 7',sp:'swim', dist:'1,025 m',time:'35:23',hr:'129', notes:'22 laps. HR settled quickly. 200m set.'},
-  {date:'Jun 12',name:'Morning Swim 8',sp:'swim', dist:'1,150 m',time:'49:40',hr:'119', notes:'76% zone 2. Best swim HR yet.'},
-  {date:'Jun 7', name:'Run',           sp:'run',  dist:'4.2 km', time:'27:03',hr:'157', notes:''},
-  {date:'Jun 5', name:'Run',           sp:'run',  dist:'4.8 km', time:'31:13',hr:'155', notes:''},
-  {date:'May 27',name:'Run',           sp:'run',  dist:'4.8 km', time:'30:31',hr:'159', notes:''},
-  {date:'May 14',name:'Run',           sp:'run',  dist:'6.4 km', time:'62:03',hr:'117', notes:'Slow walk/run.'},
-  {date:'May 1', name:'Run',           sp:'run',  dist:'5.1 km', time:'32:15',hr:'178', notes:'HR too high — went out too hard.'},
+const STRENGTH_SESSIONS = [
+  {
+    id:'A', name:'Session A — Lower + core', badge:'str-lower',
+    exercises:[
+      {name:'Goblet squat',         sets:'3 × 12',   cue:'Chest up, knees track toes'},
+      {name:'Single-leg RDL',       sets:'3 × 10 ea', cue:'Hinge at hip, soft knee, feel hamstring'},
+      {name:'Hip thrust',           sets:'3 × 15',   cue:'Squeeze glutes at top, ribs down'},
+      {name:'Lateral band walk',    sets:'2 × 20',   cue:'Stay low, band above knees'},
+      {name:'Dead bug',             sets:'3 × 10 ea', cue:'Lower back pressed to floor throughout'},
+      {name:'Single-leg calf raise',sets:'3 × 15 ea', cue:'Full range, control the descent'},
+    ]
+  },
+  {
+    id:'B', name:'Session B — Upper + rotational', badge:'str-upper',
+    exercises:[
+      {name:'Dumbbell row',         sets:'3 × 12 ea', cue:'Elbow drives back, don\'t rotate torso'},
+      {name:'Push-up or DB press',  sets:'3 × 10',   cue:'Body rigid, full range'},
+      {name:'Pallof press',         sets:'3 × 12 ea', cue:'Resist rotation — that\'s the whole point'},
+      {name:'Step-up with knee drive',sets:'3×10 ea', cue:'Drive through heel of working leg'},
+      {name:'Band pull-apart',      sets:'3 × 15',   cue:'Straight arms, squeeze shoulder blades'},
+      {name:'Plank hold',           sets:'3 × 30s',  cue:'Hips level, breathe normally'},
+    ]
+  }
 ];
 
-let state = {weeks:{}, sessions:{}, strength:{}};
-function sk(w,s){return `w${w}s${s}`}
+// ── state ────────────────────────────────────────────────────────────────
+let state = {sessions:{}, strength:{}};
 function load(){try{const v=localStorage.getItem(LSKEY);if(v)state=JSON.parse(v);}catch(e){}}
 function save(){try{localStorage.setItem(LSKEY,JSON.stringify(state));}catch(e){}}
+function sid(wn,si){return `w${wn}_s${si}`}
 
+// ── countdown ─────────────────────────────────────────────────────────────
 function p(n){return String(n).padStart(2,'0')}
 function tick(){
   const diff=RACE-new Date();
@@ -322,100 +413,239 @@ function tick(){
   document.getElementById('cd-h').textContent=p(Math.floor(diff%86400000/3600000));
   document.getElementById('cd-m').textContent=p(Math.floor(diff%3600000/60000));
   document.getElementById('cd-s').textContent=p(Math.floor(diff%60000/1000));
-  const pct=Math.min(100,Math.max(0,Math.round((new Date()-START)/(RACE-START)*100)));
-  document.getElementById('prog-fill').style.width=pct+'%';
-  document.getElementById('prog-pct').textContent=pct+'% done';
-  const elDays=Math.floor((new Date()-START)/86400000);
-  const wkNum=Math.min(12,Math.max(1,Math.floor(elDays/7)+1));
-  document.getElementById('week-name').textContent=`Week ${wkNum} of 12`;
-  const phases=['Base','Base','Base','Build 1','Build 1','Build 1','Build 2','Build 2','Build 2','Peak','Taper','Race Week'];
-  document.getElementById('phase-name').textContent=phases[wkNum-1]||'Race Week';
+  const elapsed=new Date()-BUILD_START;
+  const wkNum=Math.max(1,Math.min(10,Math.floor(elapsed/604800000)+1));
+  const phases=['Build 1','Build 1','Build 1','Build 2','Build 2','Build 2','Peak + Taper','Peak + Taper','Peak + Taper','Peak + Taper'];
+  document.getElementById('cd-phase').textContent=phases[wkNum-1]||'Race Week';
+  document.getElementById('cd-week').textContent=`Week ${wkNum+4} of 14`;
 }
 
+// ── stats ─────────────────────────────────────────────────────────────────
 function updateStats(){
-  const dw=weeks.filter(w=>state.weeks[w.n]).length;
-  let ds=0;weeks.forEach(w=>w.s.forEach((_,i)=>{if(state.sessions[sk(w.n,i)])ds++;}));
-  const dstr=Object.values(state.strength).filter(Boolean).length;
-  document.getElementById('st-wk').textContent=dw+'/12';
-  document.getElementById('st-sess').textContent=ds;
-  document.getElementById('st-str').textContent=dstr;
+  let total=0, done=0, byDisc={swim:0,bike:0,run:0,str:0}, totDisc={swim:0,bike:0,run:0,str:0};
+  WEEKS.forEach(w=>w.sessions.forEach((s,i)=>{
+    if(s.disc==='rest') return;
+    total++;
+    const d=s.disc==='brick'?'bike':(s.disc==='race'?'run':s.disc);
+    if(totDisc[d]!==undefined) totDisc[d]++;
+    if(state.sessions[sid(w.num,i)]){done++;if(byDisc[d]!==undefined)byDisc[d]++;}
+  }));
+  let strTotal=0,strDone=0;
+  WEEKS.forEach(w=>w.sessions.forEach((s,i)=>{if(s.disc==='str'){strTotal++;if(state.sessions[sid(w.num,i)])strDone++;}}));
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-total').textContent=total;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('stat-pct').textContent=pct+'%';
+  document.getElementById('main-bar').style.width=pct+'%';
+  const finWks=WEEKS.filter(w=>w.sessions.filter((_,i)=>state.sessions[sid(w.num,i)]).length===w.sessions.filter(s=>s.disc!=='rest').length).length;
+  document.getElementById('stat-weeks').textContent=finWks;
+  ['swim','bike','run'].forEach(d=>{
+    const p=totDisc[d]?Math.round(byDisc[d]/totDisc[d]*100):0;
+    document.getElementById('bar-'+d).style.width=p+'%';
+    document.getElementById('lbl-'+d).textContent=p+'%';
+  });
+  const sp=strTotal?Math.round(strDone/strTotal*100):0;
+  document.getElementById('bar-str').style.width=sp+'%';
+  document.getElementById('lbl-str').textContent=sp+'%';
 }
 
-function showPanel(id,btn){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
-  btn.classList.add('active');
+// ── phase nav ─────────────────────────────────────────────────────────────
+let currentView = 'phase';
+let currentPhase = 0;
+
+function showPhase(ph){
+  currentView='phase'; currentPhase=ph;
+  document.querySelectorAll('.phase-btn').forEach((b,i)=>b.classList.toggle('active',i===ph));
+  renderPhase(ph);
+}
+function showStrength(){
+  currentView='strength';
+  document.querySelectorAll('.phase-btn').forEach((b,i)=>b.classList.toggle('active',i===4));
+  renderStrength();
 }
 
-const sportDot={swim:'var(--coral)',run:'var(--teal)',bike:'var(--blue)',brick:'var(--purple)',race:'var(--amber)'};
-const phaseMeta={base:{label:'Phase 1 — base (weeks 1–3)'},build1:{label:'Phase 2 — build 1 (weeks 4–6)'},build2:{label:'Phase 3 — build 2 (weeks 7–9)'},peak:{label:'Phase 4 — peak (week 10)'},taper:{label:'Phase 5 — taper & race (weeks 11–12)'}};
+// ── render phase ──────────────────────────────────────────────────────────
+const PHASE_NOTES = [
+  '<strong>Base phase — complete.</strong> Four weeks of building the habit and getting comfortable across all three sports. The bike fitness was already there. Swim and run are now established. These weeks count.',
+  '<strong>Build 1 (weeks 5–7).</strong> Brick workouts, longer swims, and the first strength sessions. Two swims and two strength sessions per week. Keep the runs genuinely easy — HR will be higher than ideal, that\'s normal for now.',
+  '<strong>Build 2 (weeks 8–10).</strong> Race-specific prep. Open water every swim. Transitions matter now. Mock triathlon in week 10. This is the hardest block.',
+  '<strong>Peak + Taper (weeks 11–14).</strong> Highest volume in week 11, then a steady step down. Do not add workouts during taper. The fitness is banked — trust it.',
+];
 
-function buildPlan(){
-  const c=document.getElementById('plan-container');
-  const elDays=Math.floor((new Date()-START)/86400000);
-  const curWk=Math.min(12,Math.max(1,Math.floor(elDays/7)+1));
-  let lastPh='',html='';
-  weeks.forEach(w=>{
-    if(w.ph!==lastPh){html+=`<div class="phase-label">${phaseMeta[w.ph].label}</div>`;lastPh=w.ph;}
-    const done=!!state.weeks[w.n],cur=w.n===curWk;
-    html+=`<div class="week${done?' done':''}${cur?' current':''}" id="wk-${w.n}">
-      <div class="week-top" onclick="toggleExpand(${w.n})">
-        <span class="wk-num">WK ${String(w.n).padStart(2,'0')}</span>
-        <span class="wk-dates">${w.d}</span>
-        <span class="wk-phase ph-${w.ph}">${w.pl}</span>
-        <div class="wk-tick${done?' done':''}" onclick="event.stopPropagation();toggleWeek(${w.n})">${done?'✓':''}</div>
-        <span class="wk-arrow" id="arr-${w.n}">▾</span>
+const DISC_BADGE = {
+  swim:'badge-swim', bike:'badge-bike', run:'badge-run',
+  str:'badge-str', brick:'badge-brick', rest:'badge-rest', race:'badge-race'
+};
+const DISC_LABEL = {
+  swim:'Swim', bike:'Bike', run:'Run', str:'Strength',
+  brick:'Brick', rest:'Rest', race:'Race day'
+};
+
+function renderPhase(ph){
+  const mc=document.getElementById('main-content');
+  const phWeeks=WEEKS.filter(w=>w.phase===ph);
+  let html=`<div class="phase-note">${PHASE_NOTES[ph]}</div>`;
+
+  phWeeks.forEach(w=>{
+    const sessCount=w.sessions.filter(s=>s.disc!=='rest').length;
+    const doneSess=w.sessions.filter((s,i)=>s.disc!=='rest'&&state.sessions[sid(w.num,i)]).length;
+    const pct=sessCount?Math.round(doneSess/sessCount*100):0;
+    const complete=pct===100;
+    const past=ph===0;
+
+    html+=`<div class="week${complete?' week-complete':''}${past?' past':''}" id="wk-${w.num}">
+      <div class="week-header" onclick="toggleWeek(${w.num})">
+        <div>
+          <div class="week-label">Week ${w.num} ${past?'<span style="font-size:9px;color:var(--done);letter-spacing:.06em">✓ done</span>':''}</div>
+          <div class="week-dates">${w.dates}</div>
+        </div>
+        <div class="week-progress">
+          <div class="week-pips">${w.sessions.map((s,i)=>{
+            const d=s.disc==='rest';
+            const ck=state.sessions[sid(w.num,i)];
+            return`<div class="pip${d?' rest':ck?' done':''}"></div>`;
+          }).join('')}</div>
+          <div class="week-pct">${pct}%</div>
+          <div class="week-chevron${ph===0?' open':''}" id="chev-${w.num}">▾</div>
+        </div>
       </div>
-      <div class="week-body" id="wb-${w.n}">
-        <div class="sessions">${w.s.map((s,i)=>{const k=sk(w.n,i),sd=!!state.sessions[k];return`<div class="sess${sd?' done':''}" id="sc-${k}" onclick="toggleSess(${w.n},${i})"><span class="sport-dot" style="background:${sportDot[s.sp]||'var(--muted)'}"></span><div class="sess-cb${sd?' done':''}" id="cb-${k}">${sd?'✓':''}</div><div class="sess-info"><div class="sl">${s.l}</div><div class="ss">${s.sub}</div></div></div>`;}).join('')}</div>
-        <div class="week-note">${w.note}</div>
+      <div class="week-days${ph===0?' open':''}" id="wd-${w.num}">
+        ${w.sessions.map((s,i)=>{
+          const ck=state.sessions[sid(w.num,i)];
+          const isRest=s.disc==='rest';
+          return`<div class="day-row${ck?' completed':''}${isRest?' rest-day':''}" onclick="${isRest?'':('toggleSess('+w.num+','+i+')')}">
+            <div class="day-check${ck?' checked':''}${isRest?' rest-check':''}">${ck?'✓':''}</div>
+            <div class="day-info">
+              <div class="day-name-label">${s.day||''}</div>
+              <div class="day-title">${s.title}</div>
+              <div class="day-detail">${s.detail}</div>
+            </div>
+            <div class="disc-badge ${DISC_BADGE[s.disc]||''}">${DISC_LABEL[s.disc]||s.disc}</div>
+          </div>`;
+        }).join('')}
       </div>
     </div>`;
   });
-  c.innerHTML=html;
-  setTimeout(()=>openWeek(curWk),80);
+
+  mc.innerHTML=html;
 }
 
-function openWeek(n){const b=document.getElementById('wb-'+n),a=document.getElementById('arr-'+n);if(!b)return;b.classList.add('open');a.classList.add('open');a.textContent='▴';}
-function toggleExpand(n){const b=document.getElementById('wb-'+n),a=document.getElementById('arr-'+n),o=b.classList.toggle('open');a.classList.toggle('open',o);a.textContent=o?'▴':'▾';}
-function toggleWeek(n){state.weeks[n]=!state.weeks[n];const el=document.getElementById('wk-'+n),tk=el.querySelector('.wk-tick');el.classList.toggle('done',!!state.weeks[n]);tk.classList.toggle('done',!!state.weeks[n]);tk.textContent=state.weeks[n]?'✓':'';updateStats();save();}
-function toggleSess(wn,si){const k=sk(wn,si);state.sessions[k]=!state.sessions[k];const c=document.getElementById('sc-'+k),cb=document.getElementById('cb-'+k),on=state.sessions[k];c.classList.toggle('done',on);cb.classList.toggle('done',on);cb.textContent=on?'✓':'';updateStats();save();}
-
-function buildLog(){
-  document.getElementById('log-body').innerHTML=log.map(a=>{
-    const hr=parseInt(a.hr),hrc=isNaN(hr)?'':hr>165?'hr-high':hr>145?'hr-mid':'hr-low';
-    return`<tr><td class="mono" style="color:var(--muted)">${a.date}</td><td style="font-weight:500">${a.name}</td><td><span class="pill pill-${a.sp}">${a.sp.charAt(0).toUpperCase()+a.sp.slice(1)}</span></td><td class="mono">${a.dist}</td><td class="mono">${a.time}</td><td class="mono ${hrc}">${a.hr}</td><td style="font-size:12px;color:var(--muted)">${a.notes}</td></tr>`;
-  }).join('');
+function toggleWeek(n){
+  const wd=document.getElementById('wd-'+n);
+  const ch=document.getElementById('chev-'+n);
+  const open=wd.classList.toggle('open');
+  ch.classList.toggle('open',open);
+  ch.textContent='▾';
 }
 
-function buildStrLog(){
-  const now=new Date(),rows=[];
-  for(let d=new Date('2026-06-22');d<=now;d.setDate(d.getDate()+1)){
-    if(d.getDay()===2||d.getDay()===5)rows.push(new Date(d));
+function toggleSess(wn,si){
+  const k=sid(wn,si);
+  state.sessions[k]=!state.sessions[k];
+  // update pip
+  const wkEl=document.getElementById('wk-'+wn);
+  const pips=wkEl.querySelectorAll('.pip');
+  const w=WEEKS.find(x=>x.num===wn);
+  if(w){
+    w.sessions.forEach((s,i)=>{
+      if(pips[i]){
+        pips[i].classList.toggle('done',!!state.sessions[sid(wn,i)]);
+      }
+    });
+    const sessCount=w.sessions.filter(s=>s.disc!=='rest').length;
+    const doneSess=w.sessions.filter((s,i)=>s.disc!=='rest'&&state.sessions[sid(w.num,i)]).length;
+    const pct=sessCount?Math.round(doneSess/sessCount*100):0;
+    wkEl.querySelector('.week-pct').textContent=pct+'%';
+    wkEl.classList.toggle('week-complete',pct===100);
   }
-  document.getElementById('str-log-body').innerHTML=rows.slice(-16).reverse().map((d,i)=>{
-    const key='str_'+d.toISOString().slice(0,10),done=!!state.strength[key],isA=i%2===0;
+  // update day row
+  const rows=wkEl.querySelectorAll('.day-row');
+  const row=rows[si];
+  if(row){
+    const ck=state.sessions[k];
+    row.classList.toggle('completed',ck);
+    const cb=row.querySelector('.day-check');
+    cb.classList.toggle('checked',ck);
+    cb.textContent=ck?'✓':'';
+  }
+  updateStats(); save();
+}
+
+// ── strength ──────────────────────────────────────────────────────────────
+function renderStrength(){
+  const mc=document.getElementById('main-content');
+  let html=`<div class="phase-note">2× per week — Session A and B, alternating. Paired with swim days. Keep it 30–40 min. Drop to 1× in weeks 12–13. Never the day before a long brick.</div>`;
+
+  // Session reference cards
+  STRENGTH_SESSIONS.forEach(sess=>{
+    html+=`<div class="str-card">
+      <div class="str-card-hdr" onclick="toggleStrCard('sc-${sess.id}')">
+        <div><div class="str-session-title">${sess.name}</div></div>
+        <span style="font-size:10px;color:var(--muted)">▾</span>
+      </div>
+      <div class="str-body open" id="sc-${sess.id}">
+        <div style="display:grid;grid-template-columns:2fr 1fr 2fr;gap:8px;padding:.5rem 1rem .5rem 2.75rem;border-bottom:1px solid var(--border)">
+          <span style="font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">Exercise</span>
+          <span style="font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">Sets</span>
+          <span style="font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase">Cue</span>
+        </div>
+        ${sess.exercises.map(ex=>`
+        <div class="str-ex-row">
+          <div class="str-ex-name">${ex.name}</div>
+          <div class="str-sets">${ex.sets}</div>
+          <div class="str-cue">${ex.cue}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+
+  // Scheduled session log
+  html+=`<div class="phase-note" style="margin-top:1.5rem"><strong>Session log</strong> — check off each strength session as you complete it.</div>`;
+  const now=new Date();
+  const rows=[];
+  for(let d=new Date('2026-06-22');d<=now;d.setDate(d.getDate()+1)){
+    if(d.getDay()===1||d.getDay()===4) rows.push(new Date(d));
+  }
+  const upcoming=[];
+  for(let d=new Date(now.getTime()+86400000);upcoming.length<6;d.setDate(d.getDate()+1)){
+    if(d.getDay()===1||d.getDay()===4) upcoming.push(new Date(d));
+  }
+  const all=[...rows.slice(-10).reverse(),...upcoming].map((d,i)=>{
+    const key='str_'+d.toISOString().slice(0,10);
+    const ck=!!state.strength[key];
+    const isFuture=d>now;
     const ds=d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-    return`<div class="str-row"><span class="str-date">${ds}</span><div class="str-focus"><div class="sf-type">Session ${isA?'A':'B'}</div><div class="sf-sub">${isA?'Lower body + core':'Upper + rotational core'}</div></div><div class="str-cb${done?' done':''}" onclick="toggleStr('${key}',this)">${done?'✓':''}</div></div>`;
-  }).join('');
+    const isA=i%2===0;
+    return`<div class="str-card${ck?' str-complete':''}">
+      <div class="str-card-hdr" style="cursor:default">
+        <div>
+          <div class="str-session-title">Session ${isA?'A':'B'} &nbsp;<span style="font-size:10px;color:var(--muted)">${ds}</span>${isFuture?' <span style="font-size:9px;color:var(--muted)">(upcoming)</span>':''}</div>
+          <div class="str-session-sub">${isA?'Lower body + core':'Upper + rotational core'}</div>
+        </div>
+        <div class="day-check${ck?' checked':''}" onclick="toggleStr('${key}',this)" style="cursor:pointer;flex-shrink:0">${ck?'✓':''}</div>
+      </div>
+    </div>`;
+  });
+  html+=all.join('');
+  mc.innerHTML=html;
 }
 
-function toggleStr(key,el){state.strength[key]=!state.strength[key];el.classList.toggle('done',!!state.strength[key]);el.textContent=state.strength[key]?'✓':'';updateStats();save();}
-
-function buildCharts(){
-  const gc='rgba(255,255,255,0.05)',tc='#7a8099';
-  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10},maxRotation:45,autoSkip:true}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10}}}}};
-  new Chart(document.getElementById('c-bike'),{type:'bar',data:{labels:['S\'24','O\'24','N\'24','D\'24','J\'25','F\'25','M\'25','A\'25','M\'25','J\'25','J\'25','A\'25','S\'25','O\'25','N\'25','D\'25','J\'26','F\'26','M\'26','A\'26','M\'26','J\'26'],datasets:[{data:[1,7,2,17,22,20,25,17,12,11,6,9,9,21,26,18,12,11,35,31,25,6],backgroundColor:'#5b8dee',borderRadius:3}]},options:base});
-  new Chart(document.getElementById('c-run'),{type:'line',data:{labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17','Jun 19'],datasets:[{data:[3.14,3.62,5.07,6.43,4.83,4.84,4.24,4.86,6.44],borderColor:'#3ab8a0',backgroundColor:'rgba(58,184,160,0.07)',borderWidth:2,pointRadius:3,fill:true,tension:0.3}]},options:base});
-  new Chart(document.getElementById('c-swim'),{type:'bar',data:{labels:['Feb\'25','Jun\'25(a)','Jun\'25(b)','Jun 12','Jun 16'],datasets:[{data:[370,480,663,1150,1025],backgroundColor:'#e8603a',borderRadius:4}]},options:base});
-  new Chart(document.getElementById('c-hr'),{type:'bar',data:{labels:['<130','130–140','140–150','150–160','160–170','170+'],datasets:[{data:[5,14,66,100,60,11],backgroundColor:['#3ab8a0','#5b8dee','#5b8dee','#e8b43a','#e8603a','#e8603a'],borderRadius:3}]},options:{...base,indexAxis:'y'}});
-  new Chart(document.getElementById('c-runhr'),{type:'line',data:{labels:['Apr\'25','Nov\'25','May 1','May 14','May 27','Jun 5','Jun 7','Jun 17'],datasets:[{data:[163,158,178,117,159,155,157,151],borderColor:'#e8603a',backgroundColor:'rgba(232,96,58,0.07)',borderWidth:2,pointRadius:4,fill:true,tension:0.2}]},options:{...base,scales:{...base.scales,y:{...base.scales.y,suggestedMin:100,suggestedMax:190}}}});
+function toggleStrCard(id){
+  document.getElementById(id).classList.toggle('open');
+}
+function toggleStr(key,el){
+  state.strength[key]=!state.strength[key];
+  const ck=state.strength[key];
+  el.classList.toggle('checked',ck);
+  el.textContent=ck?'✓':'';
+  el.closest('.str-card').classList.toggle('str-complete',ck);
+  updateStats(); save();
 }
 
+// ── init ──────────────────────────────────────────────────────────────────
 load();
-tick();setInterval(tick,1000);
-buildPlan();buildLog();buildStrLog();buildCharts();updateStats();
+tick(); setInterval(tick,1000);
+showPhase(0);
+updateStats();
 </script>
 </body>
 </html>
