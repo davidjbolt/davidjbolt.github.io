@@ -643,6 +643,18 @@ function toggleStr(key,el){
 
 // ── init ──────────────────────────────────────────────────────────────────
 load();
+// Mark all base phase sessions complete if not already set
+(function(){
+  const baseWeeks = WEEKS.filter(w => w.phase === 0);
+  let changed = false;
+  baseWeeks.forEach(w => {
+    w.sessions.forEach((s, i) => {
+      const k = sid(w.num, i);
+      if (!state.sessions[k]) { state.sessions[k] = true; changed = true; }
+    });
+  });
+  if (changed) save();
+})();
 tick(); setInterval(tick,1000);
 showPhase(0);
 updateStats();
